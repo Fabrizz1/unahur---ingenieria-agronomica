@@ -1,271 +1,554 @@
 import { Subject, CareerPath } from "./types";
 
 export const SUBJECTS_DATA: Subject[] = [
-  // AÑO 1
+  // ═══ 1° AÑO — 1° CUATRIMESTRE ═══
   {
-    id: "mat-1",
-    name: "Matemática General",
-    year: 1,
-    term: "1° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Bases del análisis matemático, álgebra, geometría analítica y funciones elementales aplicadas al cálculo de dosis y dimensiones de campo.",
-    hours: 96
-  },
-  {
-    id: "qca-1",
-    name: "Química General e Inorgánica",
-    year: 1,
-    term: "1° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Estructura atómica, enlaces, soluciones, equilibrio químico y reacciones fundamentales para entender el comportamiento de agroquímicos y nutrientes.",
-    hours: 96
-  },
-  {
-    id: "intro-agro",
-    name: "Introducción a la Agronomía",
+    id: "intro-desarrollo-agrario",
+    name: "Introducción al Desarrollo Agrario",
     year: 1,
     term: "1° Cuatrimestre",
     area: "Socioeconomía y Extensión",
-    description: "Primer contacto con la profesión, sistemas agroalimentarios nacionales, sustentabilidad, soberanía alimentaria y la realidad rural del conurbano bonaerense.",
+    description: "Primer acercamiento a la profesión agronómica. Sistemas agroalimentarios, territorios periurbanos, agricultura familiar y el rol del ingeniero agrónomo en la región.",
     hours: 64
   },
   {
-    id: "bot-morfo",
-    name: "Botánica Morfológica",
+    id: "ateneo-estudio-casos",
+    name: "Ateneo de Estudio de Casos",
     year: 1,
-    term: "2° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Anatomía y morfología de las plantas superiores. Estudio detallado de raíces, tallos, hojas, flores y frutos desde una perspectiva utilitaria.",
-    hours: 96,
-    correlatives: ["intro-agro"]
-  },
-  {
-    id: "qca-org",
-    name: "Química Orgánica",
-    year: 1,
-    term: "2° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Compuestos del carbono, carbohidratos, lípidos, proteínas, ácidos nucleicos. Bioquímica de la fotosíntesis y respiración vegetal.",
-    hours: 96,
-    correlatives: ["qca-1"]
-  },
-
-  // AÑO 2
-  {
-    id: "fisica",
-    name: "Física General",
-    year: 2,
-    term: "1° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Mecánica, hidrostática, termodinámica y electricidad. Principios físicos aplicados al funcionamiento de bombas de agua, tracción de maquinaria y clima.",
-    hours: 96,
-    correlatives: ["mat-1"]
-  },
-  {
-    id: "bot-sist",
-    name: "Botánica Sistemática",
-    year: 2,
-    term: "1° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Clasificación de familias de importancia agronómica. Identificación de malezas, cultivos comerciales, pasturas nativas y especies exóticas.",
-    hours: 96,
-    correlatives: ["bot-morfo"]
-  },
-  {
-    id: "clima",
-    name: "Climatología y Fenología",
-    year: 2,
-    term: "1° Cuatrimestre",
-    area: "Suelos y Clima",
-    description: "Estudio de variables atmosféricas, radiación solar, heladas, vientos y balance hídrico. Interpretación de pronósticos e impacto del cambio climático.",
-    hours: 80,
-    correlatives: ["mat-1"]
-  },
-  {
-    id: "estadig",
-    name: "Bioestadística",
-    year: 2,
-    term: "2° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Diseño de experimentos de campo, análisis de varianza, probabilidades y testeo de hipótesis aplicados a la investigación agrícola.",
-    hours: 80,
-    correlatives: ["mat-1"]
-  },
-  {
-    id: "edafologia",
-    name: "Edafología (Suelos)",
-    year: 2,
-    term: "2° Cuatrimestre",
-    area: "Suelos y Clima",
-    description: "Génesis, física, química y biología de suelos. Clasificación de suelos, capacidad de uso, retención de agua y bases de la fertilidad.",
-    hours: 96,
-    correlatives: ["qca-org"]
-  },
-
-  // AÑO 3 (Título Intermedio al completar el año)
-  {
-    id: "fisio-veg",
-    name: "Fisiología Vegetal",
-    year: 3,
-    term: "1° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Procesos metabólicos, absorción de agua, nutrición mineral, hormonas vegetales y respuestas al estrés hídrico, salino y térmico.",
-    hours: 96,
-    correlatives: ["bot-sist", "qca-org"]
-  },
-  {
-    id: "maquinaria",
-    name: "Maquinaria Agrícola",
-    year: 3,
     term: "1° Cuatrimestre",
     area: "Tecnología e Ingeniería",
-    description: "Tractores, sembradoras, cosechadoras y pulverizadoras. Mecánica elemental, mantenimiento, calibración y optimización de uso energético en el lote.",
-    hours: 80,
-    correlatives: ["fisica"]
-  },
-  {
-    id: "microbiologia",
-    name: "Microbiología Agrícola",
-    year: 3,
-    term: "2° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Bacterias, hongos y virus del suelo y plantas. Fijación biológica del nitrógeno, micorrizas y compostaje biológico.",
-    hours: 80,
-    correlatives: ["qca-org"]
-  },
-  {
-    id: "zoologia",
-    name: "Zoología Agrícola",
-    year: 3,
-    term: "2° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Estudio de insectos, ácaros y nematodos de interés agrícola. Manejo integrado de plagas, ecología de insectos benéficos y polinizadores.",
-    hours: 96,
-    correlatives: ["bot-sist"]
-  },
-  {
-    id: "nutri-animal",
-    name: "Bases de la Nutrición Animal",
-    year: 3,
-    term: "2° Cuatrimestre",
-    area: "Producción Animal",
-    description: "Fisiología de la digestión en rumiantes y no rumiantes. Valoración nutritiva de forrajes, formulación de raciones y balance nutricional.",
-    hours: 80,
-    correlatives: ["qca-org"]
-  },
-
-  // AÑO 4
-  {
-    id: "fitopatologia",
-    name: "Fitopatología",
-    year: 4,
-    term: "1° Cuatrimestre",
-    area: "Producción Vegetal",
-    description: "Enfermedades bióticas y abióticas de los cultivos. Hongos, bacterias, virus y fitoplasmas patógenos. Métodos de diagnóstico e identificación.",
-    hours: 96,
-    correlatives: ["microbiologia", "fisio-veg"]
-  },
-  {
-    id: "genetica",
-    name: "Genética y Mejoramiento",
-    year: 4,
-    term: "1° Cuatrimestre",
-    area: "Ciencias Básicas",
-    description: "Leyes de herencia, genética de poblaciones, biotecnología aplicada. Métodos tradicionales e ingeniería genética para mejorar cultivos frente a sequías o plagas.",
-    hours: 96,
-    correlatives: ["fisio-veg", "estadig"]
-  },
-  {
-    id: "cultivos-grano",
-    name: "Producción de Cultivos de Grano",
-    year: 4,
-    term: "2° Cuatrimestre",
-    area: "Producción Vegetal",
-    description: "Tecnología de producción de soja, maíz, trigo, girasol y cebada. Épocas de siembra, densidades, fertilización y cosecha eficiente.",
-    hours: 112,
-    correlatives: ["fisio-veg", "edafologia"]
-  },
-  {
-    id: "horticultura",
-    name: "Horticultura y Floricultura",
-    year: 4,
-    term: "2° Cuatrimestre",
-    area: "Producción Vegetal",
-    description: "Producción intensiva de hortalizas y flores. Cultivos protegidos bajo invernadero, hidroponía y cinturones verdes urbanos bonaerenses.",
-    hours: 96,
-    correlatives: ["fisio-veg"]
-  },
-  {
-    id: "pasturas",
-    name: "Producción y Manejo de Pasturas",
-    year: 4,
-    term: "2° Cuatrimestre",
-    area: "Producción Animal",
-    description: "Especies forrajeras clave. Establecimiento y manejo del pastoreo, curvas de crecimiento de forraje y reservas (henificación y silaje).",
-    hours: 96,
-    correlatives: ["fisio-veg", "edafologia"]
-  },
-
-  // AÑO 5
-  {
-    id: "riego",
-    name: "Riego y Drenaje",
-    year: 5,
-    term: "1° Cuatrimestre",
-    area: "Tecnología e Ingeniería",
-    description: "Sistemas de riego localizado (goteo), aspersión y gravedad. Calidad de agua de riego, necesidades hídricas y drenaje de terrenos anegados.",
-    hours: 80,
-    correlatives: ["edafologia", "fisica"]
-  },
-  {
-    id: "ganaderia",
-    name: "Sistemas de Producción Ganadera",
-    year: 5,
-    term: "1° Cuatrimestre",
-    area: "Producción Animal",
-    description: "Producción de carne bovina, lechería (tambo), porcinos y aves. Modelos pastoriles, semi-intensivos y feedlots con criterio de bienestar animal.",
-    hours: 112,
-    correlatives: ["pasturas", "nutri-animal"]
+    description: "Taller de integración donde se analizan casos reales de sistemas productivos intensivos. Resolución de problemas multidisciplinarios con enfoque agroecológico.",
+    hours: 64
   },
   {
     id: "agroecologia",
-    name: "Agroecología y Sistemas Sustentables",
+    name: "Agroecología",
+    year: 1,
+    term: "1° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Fundamentos ecológicos de la producción agropecuaria. Ciclos de nutrientes, energía en agroecosistemas, biodiversidad y principios de sustentabilidad.",
+    hours: 80
+  },
+  {
+    id: "biologia",
+    name: "Biología",
+    year: 1,
+    term: "1° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Biología celular, genética molecular, tejidos y organismos. Niveles de organización biológica aplicados al estudio de sistemas agropecuarios.",
+    hours: 96
+  },
+  {
+    id: "matematica-aplicada",
+    name: "Matemática Aplicada",
+    year: 1,
+    term: "1° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Álgebra, funciones, cálculo diferencial e integral. Modelado matemático de fenómenos agronómicos como crecimiento de cultivos y balance hídrico.",
+    hours: 96
+  },
+  {
+    id: "nuevos-entornos",
+    name: "Nuevos Entornos y Lenguajes",
+    year: 1,
+    term: "1° Cuatrimestre",
+    area: "Tecnología e Ingeniería",
+    description: "Alfabetización digital, herramientas colaborativas, procesamiento de datos y comunicación audiovisual aplicada al ámbito universitario y profesional.",
+    hours: 32
+  },
+  {
+    id: "unahur-1",
+    name: "UNAHUR I",
+    year: 1,
+    term: "1° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Taller de ambientación universitaria. Derechos estudiantiles, funcionamiento institucional, estrategias de estudio y vida universitaria en la UNAHUR.",
+    hours: 32
+  },
+
+  // ═══ 1° AÑO — 2° CUATRIMESTRE ═══
+  {
+    id: "introduccion-botanica",
+    name: "Introducción a la Botánica",
+    year: 1,
+    term: "2° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Morfología, anatomía y organografía vegetal. Identificación de estructuras vegetativas y reproductivas de especies de interés agronómico.",
+    hours: 96,
+    correlatives: ["biologia"]
+  },
+  {
+    id: "quimica-general",
+    name: "Química General",
+    year: 1,
+    term: "2° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Estructura atómica, enlaces, estequiometría, soluciones, equilibrio químico y pH. Bases para entender la química de suelos, agua y agroinsumos.",
+    hours: 96,
+    correlatives: ["biologia"]
+  },
+  {
+    id: "floricultura-1",
+    name: "Floricultura I",
+    year: 1,
+    term: "2° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Introducción a la producción de flores de corte y plantas ornamentales. Manejo de vivero, sustratos, propagación y comercialización en el cinturón verde.",
+    hours: 80,
+    correlatives: ["introduccion-botanica"]
+  },
+  {
+    id: "discusiones-desarrollo",
+    name: "Discusiones sobre Desarrollo",
+    year: 1,
+    term: "2° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Debate crítico sobre modelos de desarrollo agrario. Teorías del desarrollo, extractivismo, soberanía alimentaria y alternativas desde la economía social.",
+    hours: 64
+  },
+  {
+    id: "fundamentos-sanidad-vegetal",
+    name: "Fundamentos de Sanidad Vegetal",
+    year: 1,
+    term: "2° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Conceptos básicos de sanidad: agentes bióticos y abióticos que afectan cultivos. Principios de diagnóstico y prevención de enfermedades y plagas.",
+    hours: 80,
+    correlatives: ["biologia"]
+  },
+  {
+    id: "ingles-1",
+    name: "Inglés I",
+    year: 1,
+    term: "2° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Comprensión lectora de textos técnicos en inglés. Vocabulario específico de ciencias agrarias y producción agropecuaria intensiva.",
+    hours: 32
+  },
+
+  // ═══ 2° AÑO — 3° CUATRIMESTRE ═══
+  {
+    id: "ecologia-teorica",
+    name: "Ecología Teórica",
+    year: 2,
+    term: "1° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Ecosistemas, poblaciones, comunidades y flujos de materia y energía. Sucesión ecológica, nicho, competencia y dinámica de disturbios en agroecosistemas.",
+    hours: 80,
+    correlatives: ["biologia"]
+  },
+  {
+    id: "bases-produccion-animal",
+    name: "Bases Biológicas de la Producción Animal",
+    year: 2,
+    term: "1° Cuatrimestre",
+    area: "Producción Animal",
+    description: "Anatomía, fisiología y etología de animales de interés productivo. Manejo reproductivo, sanidad básica y bienestar animal en sistemas intensivos.",
+    hours: 80,
+    correlatives: ["biologia"]
+  },
+  {
+    id: "horticultura-1",
+    name: "Horticultura I",
+    year: 2,
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Producción de hortalizas a campo y bajo cubierta. Implantación de cultivos, rotaciones, manejo de cultivos protegidos y producción estacional en el AMBA.",
+    hours: 80,
+    correlatives: ["introduccion-botanica", "quimica-general"]
+  },
+  {
+    id: "inmersion-realidad-social",
+    name: "Inmersión a la Realidad Social Agraria",
+    year: 2,
+    term: "1° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Práctica de campo que vincula al estudiante con productores y organizaciones del territorio. Diagnóstico participativo de problemáticas del cinturón hortícola.",
+    hours: 64,
+    correlatives: ["discusiones-desarrollo"]
+  },
+  {
+    id: "geografia-agraria",
+    name: "Geografía Agraria Nacional",
+    year: 2,
+    term: "1° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Regiones agroproductivas argentinas. Uso del suelo, estructura agraria, tenencia de la tierra y conflictos territoriales en el contexto nacional.",
+    hours: 64
+  },
+
+  // ═══ 2° AÑO — 4° CUATRIMESTRE ═══
+  {
+    id: "ecofisiologia-vegetal",
+    name: "Ecofisiología Vegetal",
+    year: 2,
+    term: "2° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Relaciones hídricas, fotosíntesis, respiración y metabolismo vegetal. Respuesta de los cultivos a factores ambientales: radiación, temperatura y agua.",
+    hours: 96,
+    correlatives: ["introduccion-botanica", "quimica-general"]
+  },
+  {
+    id: "fruticultura-1",
+    name: "Fruticultura I",
+    year: 2,
+    term: "2° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Manejo de frutales de clima templado. Implantación, poda, injertación, manejo de suelo y cosecha de especies frutícolas regionales.",
+    hours: 80,
+    correlatives: ["introduccion-botanica"]
+  },
+  {
+    id: "produccion-animal-1",
+    name: "Producción Animal I",
+    year: 2,
+    term: "2° Cuatrimestre",
+    area: "Producción Animal",
+    description: "Sistemas de producción de carne y leche bovina. Manejo de rodeos, alimentación, sanidad, reproducción e instalaciones para producción intensiva.",
+    hours: 96,
+    correlatives: ["bases-produccion-animal"]
+  },
+  {
+    id: "economia-social-ecologica",
+    name: "Economía Social y Ecológica",
+    year: 2,
+    term: "2° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Principios de economía ecológica y solidaria. Valoración de bienes comunes, mercados locales, comercio justo y circuitos cortos de comercialización.",
+    hours: 80,
+    correlatives: ["discusiones-desarrollo"]
+  },
+  {
+    id: "edafologia-suelos",
+    name: "Edafología y Manejo de Suelos",
+    year: 2,
+    term: "2° Cuatrimestre",
+    area: "Suelos y Clima",
+    description: "Génesis, morfología, clasificación y cartografía de suelos. Física, química y biología del suelo. Fertilidad, labranza y conservación de suelos agrícolas.",
+    hours: 96,
+    correlatives: ["quimica-general", "ecologia-teorica"]
+  },
+
+  // ═══ 3° AÑO — 5° CUATRIMESTRE ═══
+  {
+    id: "manejo-adversidades",
+    name: "Manejo Agroecológico de Adversidades",
+    year: 3,
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Manejo ecológico de plagas, enfermedades y malezas. Control biológico, cultural, etológico y químico selectivo. Bioinsumos y monitoreo de adversidades.",
+    hours: 96,
+    correlatives: ["fundamentos-sanidad-vegetal", "ecologia-teorica"]
+  },
+  {
+    id: "arboricultura-1",
+    name: "Arboricultura I",
+    year: 3,
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Producción de especies forestales y ornamentales leñosas. Viveros forestales, plantación, poda de formación y manejo de arbolado urbano y rural.",
+    hours: 80,
+    correlatives: ["introduccion-botanica"]
+  },
+  {
+    id: "historia-acceso-tierra",
+    name: "Historia del Acceso a la Tierra",
+    year: 3,
+    term: "1° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Procesos históricos de distribución y concentración de la tierra en Argentina. Reforma agraria, colonización, agricultura familiar y conflictos territoriales.",
+    hours: 64,
+    correlatives: ["geografia-agraria"]
+  },
+  {
+    id: "nutricion-soberania",
+    name: "Nutrición y Soberanía Alimentaria",
+    year: 3,
+    term: "1° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Bases de la nutrición humana y animal. Sistemas alimentarios locales, derecho a la alimentación, soberanía vs. seguridad alimentaria y hábitos regionales.",
+    hours: 80,
+    correlatives: ["economia-social-ecologica"]
+  },
+  {
+    id: "seguridad-practicas",
+    name: "Seguridad en Prácticas Agrícolas",
+    year: 3,
+    term: "1° Cuatrimestre",
+    area: "Tecnología e Ingeniería",
+    description: "Normativas de higiene y seguridad en el ámbito agropecuario. Manejo seguro de agroquímicos, maquinaria y equipos. Protección personal y ambiental.",
+    hours: 32,
+    correlatives: ["fundamentos-sanidad-vegetal"]
+  },
+
+  // ═══ 3° AÑO — 6° CUATRIMESTRE ═══
+  {
+    id: "botanica-agricola",
+    name: "Botánica Agrícola",
+    year: 3,
+    term: "2° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Taxonomía y sistemática de especies cultivadas y espontáneas de interés agronómico. Familias botánicas relevantes: poáceas, fabáceas, solanáceas y asteráceas.",
+    hours: 96,
+    correlatives: ["introduccion-botanica"]
+  },
+  {
+    id: "analisis-territorios",
+    name: "Análisis de Territorios",
+    year: 3,
+    term: "2° Cuatrimestre",
+    area: "Tecnología e Ingeniería",
+    description: "Sistemas de Información Geográfica (SIG) aplicados al agro. Teledetección, cartografía temática, zonificación de cultivos y ordenamiento territorial.",
+    hours: 80,
+    correlatives: ["geografia-agraria", "matematica-aplicada"]
+  },
+  {
+    id: "biofisica-aplicada",
+    name: "Biofísica Aplicada",
+    year: 3,
+    term: "2° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Principios físicos aplicados a sistemas biológicos. Mecánica de fluidos, termodinámica, radiación, óptica y electricidad en el contexto agropecuario.",
+    hours: 80,
+    correlatives: ["matematica-aplicada"]
+  },
+  {
+    id: "politicas-desarrollo-territorial",
+    name: "Políticas para el Desarrollo Territorial",
+    year: 3,
+    term: "2° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Políticas públicas agrarias y de desarrollo rural. Planificación territorial, presupuesto participativo, legislación vigente y organismos de intervención.",
+    hours: 64,
+    correlatives: ["historia-acceso-tierra"]
+  },
+  {
+    id: "unahur-2",
+    name: "UNAHUR II",
+    year: 3,
+    term: "2° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Taller de integración y práctica profesional. Elaboración de proyectos, inserción laboral, vinculación con el medio y trayectorias formativas.",
+    hours: 32,
+    correlatives: ["unahur-1"]
+  },
+
+  // ═══ 4° AÑO — 7° CUATRIMESTRE ═══
+  {
+    id: "floricultura-2",
+    name: "Floricultura II",
+    year: 4,
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Manejo avanzado de cultivos florícolas. Propagación comercial, fisiología de floración, poscosecha, fitosanidad y gestión de empresas florícolas.",
+    hours: 80,
+    correlatives: ["floricultura-1"]
+  },
+  {
+    id: "horticultura-2",
+    name: "Horticultura II",
+    year: 4,
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Sistemas intensivos de producción hortícola. Hidroponía, fertirriego, manejo de adversidades en cultivos protegidos y planificación de campañas.",
+    hours: 96,
+    correlatives: ["horticultura-1", "ecofisiologia-vegetal"]
+  },
+  {
+    id: "biodiversidad-agricola",
+    name: "Biodiversidad Agrícola",
+    year: 4,
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Diversidad genética de cultivos y parientes silvestres. Conservación de germoplasma, bancos de semillas, policultivos y servicios ecosistémicos.",
+    hours: 80,
+    correlatives: ["ecologia-teorica", "botanica-agricola"]
+  },
+  {
+    id: "climatologia-fenologia",
+    name: "Climatología y Fenología",
+    year: 4,
+    term: "1° Cuatrimestre",
+    area: "Suelos y Clima",
+    description: "Variables climáticas, balance hídrico, heladas, grados día y fenología de cultivos. Interpretación de cartas climáticas y modelos agroclimáticos.",
+    hours: 80,
+    correlatives: ["matematica-aplicada"]
+  },
+  {
+    id: "agua-riego",
+    name: "Agua y Sistemas de Riego",
+    year: 4,
+    term: "1° Cuatrimestre",
+    area: "Suelos y Clima",
+    description: "Relación agua-suelo-planta. Sistemas de riego presurizado, gravedad y drenaje. Calidad de agua, eficiencia de uso y programación del riego.",
+    hours: 80,
+    correlatives: ["edafologia-suelos", "biofisica-aplicada"]
+  },
+  {
+    id: "modelos-conocimiento",
+    name: "Modelos de Producción de Conocimiento",
+    year: 4,
+    term: "1° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Epistemología y metodología de la investigación. Enfoques cuantitativos y cualitativos. Diseño experimental, muestreo y comunicación científica.",
+    hours: 64,
+    correlatives: ["ecologia-teorica"]
+  },
+  {
+    id: "bioinsumos",
+    name: "Bioinsumos Agropecuarios",
+    year: 4,
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Inoculantes biológicos, biofertilizantes, biopesticidas y enmiendas orgánicas. Producción, control de calidad y aplicación en sistemas agroecológicos.",
+    hours: 64,
+    correlatives: ["manejo-adversidades"]
+  },
+  {
+    id: "ingles-2",
+    name: "Inglés II",
+    year: 4,
+    term: "1° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Lectura y análisis de publicaciones científicas en inglés. Redacción de abstracts, informes técnicos y comunicación oral en contextos académicos.",
+    hours: 32,
+    correlatives: ["ingles-1"]
+  },
+
+  // ═══ 4° AÑO — 8° CUATRIMESTRE ═══
+  {
+    id: "taller-bioensayos",
+    name: "Taller de Bioensayos",
+    year: 4,
+    term: "2° Cuatrimestre",
+    area: "Ciencias Básicas",
+    description: "Diseño y ejecución de ensayos biológicos. Técnicas de laboratorio y campo para evaluar germinación, fitotoxicidad, eficacia de bioinsumos y calidad de suelo.",
+    hours: 80,
+    correlatives: ["modelos-conocimiento"]
+  },
+  {
+    id: "tecnologias-agricolas",
+    name: "Tecnologías Agrícolas",
+    year: 4,
+    term: "2° Cuatrimestre",
+    area: "Tecnología e Ingeniería",
+    description: "Maquinaria, equipos e innovaciones tecnológicas para sistemas intensivos. Agricultura de precisión, automatización de invernaderos y trazabilidad digital.",
+    hours: 80,
+    correlatives: ["biofisica-aplicada"]
+  },
+  {
+    id: "extension-agraria",
+    name: "Desarrollo Rural y Extensión Agraria",
+    year: 4,
+    term: "2° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Teoría y práctica de la extensión rural. Metodologías participativas, comunicación dialógica, transferencia de tecnología y trabajo con comunidades campesinas.",
+    hours: 80,
+    correlatives: ["inmersion-realidad-social"]
+  },
+  {
+    id: "turismo-rural",
+    name: "Turismo Rural y Periurbano",
+    year: 4,
+    term: "2° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Agroturismo, turismo rural y recreación en espacios periurbanos. Planificación de emprendimientos turísticos en establecimientos agropecuarios familiares.",
+    hours: 64,
+    correlatives: ["economia-social-ecologica"]
+  },
+  {
+    id: "fruticultura-2",
+    name: "Fruticultura II",
+    year: 4,
+    term: "2° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Manejo especializado de frutales. Riego localizado, nutrición, poda de producción, raleo, control de adversidades y cosecha con criterios de calidad.",
+    hours: 80,
+    correlatives: ["fruticultura-1", "ecofisiologia-vegetal"]
+  },
+  {
+    id: "arboricultura-2",
+    name: "Arboricultura II",
+    year: 4,
+    term: "2° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Manejo de plantaciones forestales. Silvicultura, turnos de corta, podas de producción, sanidad forestal y certificación de manejo sustentable.",
+    hours: 80,
+    correlatives: ["arboricultura-1"]
+  },
+
+  // ═══ 5° AÑO — 9° CUATRIMESTRE ═══
+  {
+    id: "fitomejoramiento",
+    name: "Fitomejoramiento",
     year: 5,
     term: "1° Cuatrimestre",
     area: "Producción Vegetal",
-    description: "Diseño y manejo de agroecosistemas sustentables. Biodiversidad, manejo ecológico de plagas, fertilización orgánica y transición agroecológica.",
-    hours: 80,
-    correlatives: ["cultivos-grano", "zoologia"]
+    description: "Métodos de mejoramiento genético vegetal. Selección, hibridación, mutagénesis y biotecnología aplicada al desarrollo de cultivares adaptados al periurbano.",
+    hours: 96,
+    correlatives: ["biodiversidad-agricola", "botanica-agricola"]
   },
   {
-    id: "agro-eco",
-    name: "Economía y Administración Agraria",
+    id: "diseno-agroecosistemas",
+    name: "Diseño y Manejo de Agroecosistemas",
     year: 5,
-    term: "2° Cuatrimestre",
-    area: "Socioeconomía y Extensión",
-    description: "Costos agropecuarios, mercados de granos y carnes, formulación de proyectos de inversión agrícola y administración de empresas familiares.",
-    hours: 80,
-    correlatives: ["mat-1"]
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Diseño integral de sistemas productivos diversificados. Rotaciones, asociaciones, integración agrícola-ganadera y planificación predial con enfoque agroecológico.",
+    hours: 96,
+    correlatives: ["horticultura-2", "manejo-adversidades"]
   },
   {
-    id: "extension",
-    name: "Extensión y Desarrollo Rural",
+    id: "administracion-agroecosistemas",
+    name: "Administración de Agroecosistemas",
     year: 5,
-    term: "2° Cuatrimestre",
+    term: "1° Cuatrimestre",
     area: "Socioeconomía y Extensión",
-    description: "Metodologías de comunicación, capacitación a pequeños y medianos productores, cooperativas agrícolas y desarrollo territorial sustentable.",
+    description: "Gestión empresarial de establecimientos agropecuarios. Costos, presupuestos, planificación estratégica, certificaciones y comercialización de productos.",
+    hours: 80,
+    correlatives: ["economia-social-ecologica"]
+  },
+  {
+    id: "electiva",
+    name: "Materia Electiva",
+    year: 5,
+    term: "1° Cuatrimestre",
+    area: "Producción Vegetal",
+    description: "Espacio curricular optativo. Ofertas disponibles: Apicultura, Forrajicultura, Cerealicultura o Cannabicultura. Se cursa según la oferta del cuatrimestre.",
     hours: 64,
-    correlatives: ["intro-agro"]
+    correlatives: ["diseno-agroecosistemas"]
+  },
+
+  // ═══ 5° AÑO — 10° CUATRIMESTRE ═══
+  {
+    id: "produccion-animal-2",
+    name: "Producción Animal II",
+    year: 5,
+    term: "2° Cuatrimestre",
+    area: "Producción Animal",
+    description: "Sistemas alternativos de producción animal. Porcinos, avicultura, ovinos, caprinos y apicultura. Manejo, sanidad, nutrición y comercialización específica.",
+    hours: 96,
+    correlatives: ["produccion-animal-1"]
   },
   {
-    id: "tfi",
-    name: "Trabajo Final de Aplicación (TFI)",
+    id: "formulacion-proyectos",
+    name: "Formulación y Evaluación de Proyectos",
+    year: 5,
+    term: "2° Cuatrimestre",
+    area: "Socioeconomía y Extensión",
+    description: "Metodología de formulación de proyectos agropecuarios. Evaluación social, económica y ambiental. Marco lógico, indicadores y fuentes de financiamiento.",
+    hours: 80,
+    correlatives: ["administracion-agroecosistemas"]
+  },
+  {
+    id: "taller-integracion-final",
+    name: "Taller de Integración Final",
     year: 5,
     term: "Anual",
     area: "Tecnología e Ingeniería",
-    description: "Integración de conocimientos mediante un proyecto de resolución de una problemática real en un campo productivo o laboratorio de la UNAHUR.",
+    description: "Trabajo final integrador que articula los saberes de toda la carrera. Resolución de una problemática real del territorio con intervención profesional supervisada.",
     hours: 160,
-    correlatives: ["cultivos-grano", "ganaderia"]
+    correlatives: ["diseno-agroecosistemas", "formulacion-proyectos"]
   }
 ];
 

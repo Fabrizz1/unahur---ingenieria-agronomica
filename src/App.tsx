@@ -69,12 +69,12 @@ const INITIAL_FORUM_POSTS: ForumPost[] = [
     title: "¿Consejos para rendir el final de Edafología?",
     author: "Mateo Fernández",
     authorRole: "Estudiante de 3° año",
-    content: "Hola gente, ¿cómo están? Rindo Edafología la semana que viene con el profe Gómez. ¿Tienen idea si toma mucho de la clasificación de suelos de la provincia o va más por el lado físico (retención de agua y textura)? Cualquier tip me sirve una banda.",
+    content: "Hola gente, ¿cómo están? Rindo Edafología y Manejo de Suelos la semana que viene con el profe Gómez. ¿Tienen idea si toma mucho de la clasificación de suelos de la provincia o va más por el lado físico (retención de agua y textura)? Cualquier tip me sirve una banda.",
     tags: ["Edafología", "Suelos", "Finales"],
     likes: 18,
     likedByUser: false,
     timestamp: "Hace 2 horas",
-    subjectId: "edafologia",
+    subjectId: "edafologia-suelos",
     replies: [
       {
         id: "rep-1-1",
@@ -94,15 +94,15 @@ const INITIAL_FORUM_POSTS: ForumPost[] = [
   },
   {
     id: "post-2",
-    title: "Resumen completo de Fisiología Vegetal (Metabolismo C3/C4/CAM)",
+    title: "Resumen completo de Ecofisiología Vegetal (Metabolismo C3/C4/CAM)",
     author: "Lucía Carrizo",
     authorRole: "Estudiante de 3° año",
-    content: "¡Buenas! Armé un cuadro comparativo super prolijo de las rutas de fijación del carbono, transpiración y eficiencia en el uso de agua para los distintos grupos de cultivos. Espero que les sirva para el segundo parcial.",
-    tags: ["Fisiología Vegetal", "Resúmenes", "Parciales"],
+    content: "¡Buenas! Armé un cuadro comparativo super prolijo de las rutas de fijación del carbono, transpiración y eficiencia en el uso de agua para los distintos grupos de cultivos. Espero que les sirva para el segundo parcial de Ecofisiología Vegetal.",
+    tags: ["Ecofisiología Vegetal", "Resúmenes", "Parciales"],
     likes: 34,
     likedByUser: false,
     timestamp: "Hace 1 día",
-    subjectId: "fisio-veg",
+    subjectId: "ecofisiologia-vegetal",
     replies: [
       {
         id: "rep-2-1",
@@ -115,15 +115,15 @@ const INITIAL_FORUM_POSTS: ForumPost[] = [
   },
   {
     id: "post-3",
-    title: "Prácticas de Maquinaria Agrícola en el predio de UNAHUR",
+    title: "Prácticas de Tecnologías Agrícolas en el predio de UNAHUR",
     author: "Nacho Alarcón",
     authorRole: "Estudiante de 3° año",
-    content: "Hola! ¿Alguien sabe si el sábado que viene hay colectivos saliendo de la sede para ir al lote de prácticas o nos encontramos directamente allá? Es para la calibración de la sembradora.",
-    tags: ["Maquinaria", "Prácticas", "Lote de Campo"],
+    content: "Hola! ¿Alguien sabe si el sábado que viene hay colectivos saliendo de la sede para ir al lote de prácticas o nos encontramos directamente allá? Es para la calibración de sembradora y el manejo del dron de precisión.",
+    tags: ["Tecnologías Agrícolas", "Prácticas", "Lote de Campo"],
     likes: 7,
     likedByUser: false,
     timestamp: "Hace 2 días",
-    subjectId: "maquinaria",
+    subjectId: "tecnologias-agricolas",
     replies: [
       {
         id: "rep-3-1",
@@ -140,7 +140,7 @@ const INITIAL_FORUM_POSTS: ForumPost[] = [
 const INITIAL_MATERIALS: SharedMaterial[] = [
   {
     id: "mat-f1",
-    subjectId: "edafologia",
+    subjectId: "edafologia-suelos",
     title: "Guía de Determinación de Humedad del Suelo por Gravimetría",
     category: "Guía Práctica",
     author: "Cátedra de Edafología",
@@ -151,7 +151,7 @@ const INITIAL_MATERIALS: SharedMaterial[] = [
   },
   {
     id: "mat-f2",
-    subjectId: "edafologia",
+    subjectId: "edafologia-suelos",
     title: "Apunte Teoría de Coloides y Capacidad de Intercambio Catiónico (CIC)",
     category: "Apunte",
     author: "Santiago Rossi",
@@ -162,7 +162,7 @@ const INITIAL_MATERIALS: SharedMaterial[] = [
   },
   {
     id: "mat-f3",
-    subjectId: "clima",
+    subjectId: "climatologia-fenologia",
     title: "Recopilación de Efemérides de Heladas en Hurlingham (2010-2025)",
     category: "Resumen",
     author: "Ing. Climatología",
@@ -173,8 +173,8 @@ const INITIAL_MATERIALS: SharedMaterial[] = [
   },
   {
     id: "mat-f4",
-    subjectId: "qca-org",
-    title: "Modelo de examen libre y respuestas - Química Orgánica",
+    subjectId: "quimica-general",
+    title: "Modelo de examen libre y respuestas - Química General",
     category: "Examen",
     author: "Matias G.",
     fileSize: "2.1 MB",
@@ -184,7 +184,7 @@ const INITIAL_MATERIALS: SharedMaterial[] = [
   },
   {
     id: "mat-f5",
-    subjectId: "agroecologia",
+    subjectId: "manejo-adversidades",
     title: "Ficha Técnica: Manejo Agroecológico de Malezas en el Cinturón Hortícola",
     category: "Guía Práctica",
     author: "Programa Extensión UNAHUR",

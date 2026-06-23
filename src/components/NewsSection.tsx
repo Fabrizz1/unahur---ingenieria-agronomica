@@ -17,7 +17,7 @@ export const NEWS_DATA = [
     title: "Visita de campo al INTA Castelar: Manejo de Plagas en Horticultura",
     category: "Prácticas",
     date: "18 de Junio, 2026",
-    summary: "Estudiantes de Zoología Agrícola visitaron el instituto nacional para capacitarse en técnicas de biocontrol usando parasitoides nativos de la pampa.",
+    summary: "Estudiantes de Manejo Agroecológico de Adversidades visitaron el instituto nacional para capacitarse en técnicas de biocontrol usando parasitoides nativos de la pampa.",
     image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=600",
     likes: 56,
     comments: 14
