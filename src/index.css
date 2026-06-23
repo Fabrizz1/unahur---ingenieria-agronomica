@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --bg: #faf8f5;
+  --bg2: #fbfaf5;
+  --bg3: #fcfbf7;
+  --bg-white: #ffffff;
+  --text: #1c221a;
+  --text2: #57534e;
+  --text3: #78716c;
+  --text4: #a8a29e;
+  --border: #1c221a;
+  --border-5: rgba(28, 34, 26, 0.05);
+  --border-10: rgba(28, 34, 26, 0.10);
+  --border-15: rgba(28, 34, 26, 0.15);
+  --border-20: rgba(28, 34, 26, 0.20);
+  --border-30: rgba(28, 34, 26, 0.30);
+  --border-50: rgba(28, 34, 26, 0.50);
+  --accent1: #ebdcc9;
+  --accent2: #e3eae4;
+  --accent3: #5c6f59;
+  --accent4: #2e3e2f;
+  --accent1-20: rgba(235, 220, 201, 0.20);
+  --accent1-30: rgba(235, 220, 201, 0.30);
+  --accent1-40: rgba(235, 220, 201, 0.40);
+  --footer: #1c221a;
+  --overlay: rgba(28, 28, 26, 0.6);
+  --stone-bg: #f5f5f4;
+  --stone-border: #e7e5e4;
+  --stone-text: #d6d3d1;
+}
+
+.dark {
+  --bg: #1a1c18;
+  --bg2: #232521;
+  --bg3: #2a2d28;
+  --bg-white: #1e201c;
+  --text: #e8e6df;
+  --text2: #a8a29e;
+  --text3: #78716c;
+  --text4: #57534e;
+  --border: #e8e6df;
+  --border-5: rgba(232, 230, 223, 0.05);
+  --border-10: rgba(232, 230, 223, 0.10);
+  --border-15: rgba(232, 230, 223, 0.15);
+  --border-20: rgba(232, 230, 223, 0.20);
+  --border-30: rgba(232, 230, 223, 0.30);
+  --border-50: rgba(232, 230, 223, 0.50);
+  --accent1: #8b7d6a;
+  --accent2: #2e3e2f;
+  --accent3: #8ba87a;
+  --accent4: #c4d4b8;
+  --accent1-20: rgba(139, 125, 106, 0.20);
+  --accent1-30: rgba(139, 125, 106, 0.30);
+  --accent1-40: rgba(139, 125, 106, 0.40);
+  --footer: #0f110e;
+  --overlay: rgba(0, 0, 0, 0.7);
+  --stone-bg: #292524;
+  --stone-border: #44403c;
+  --stone-text: #57534e;
+}
