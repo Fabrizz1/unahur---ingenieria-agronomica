@@ -502,7 +502,7 @@ export default function App() {
           <div className="flex items-center justify-center gap-2 text-[var(--bg2)] dark:text-white text-sm">
             <Sprout className="w-5 h-5 text-[var(--accent1)]" />
             <span className="font-serif font-black tracking-widest uppercase">UNAHUR</span>
-            <span className="font-light text-[var(--text3)]">| Departamento de Ciencias Aplicadas</span>
+             <span className="font-light text-[var(--text3)]">| Instituto de Biotecnología</span>
           </div>
           <p className="text-xs text-[var(--text2)] max-w-xl mx-auto leading-relaxed">
             Este portal ha sido diseñado con estándares de rigor editorial y sirve como espacio oficial de trabajo colaborativo para la comunidad estudiantil de Ingeniería Agronómica, Sede Hurlingham, Buenos Aires.
