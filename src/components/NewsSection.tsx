@@ -1,5 +1,7 @@
 import React from "react";
 import { Calendar, Heart, MessageSquare } from "lucide-react";
+import { motion } from "motion/react";
+import { Reveal } from "./Reveal";
 
 export const NEWS_DATA = [
   {
@@ -60,8 +62,9 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
       {/* News Feed Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {NEWS_DATA.map((news) => (
-          <div
-            key={news.id}
+          <Reveal key={news.id} y={20}>
+          <motion.div
+            whileHover={{ scale: 1.015 }}
             className="bg-[var(--bg3)] border border-[var(--border-15)] rounded-none overflow-hidden flex flex-col hover:border-[var(--border-35)] transition-all"
           >
             <div className="h-44 relative bg-[var(--stone-bg)] border-b border-[var(--border-10)]">
@@ -100,7 +103,8 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
                 <span className="italic text-[11px]">{news.comments} comentarios</span>
               </div>
             </div>
-          </div>
+          </motion.div>
+          </Reveal>
         ))}
       </div>
 

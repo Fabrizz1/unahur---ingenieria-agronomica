@@ -1,6 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Sprout, Droplet, Layers, CornerDownRight, AlertCircle } from "lucide-react";
+import { motion } from "motion/react";
 import { CropType, SoilType, SimulationConfig, SimulationResult } from "../types";
+import { Reveal } from "./Reveal";
+
+function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const [display, setDisplay] = useState(0);
+  const prevRef = useRef(0);
+
+  useEffect(() => {
+    let start = prevRef.current;
+    const diff = value - start;
+    if (diff === 0) return;
+    const duration = 800;
+    const startTime = performance.now();
+    let raf: number;
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - (1 - progress) * (1 - progress);
+      setDisplay(Math.round(start + diff * eased));
+      if (progress < 1) raf = requestAnimationFrame(tick);
+      else prevRef.current = value;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+
+  return <>{display.toLocaleString("es-AR")}{suffix}</>;
+}
 
 interface SimulatorSectionProps {
   triggerNotification: (msg: string) => void;
@@ -383,7 +411,12 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
               </div>
             </div>
           ) : (
-            <div className="bg-[var(--bg-white)] p-6 rounded-none border border-[var(--border-15)] shadow-none space-y-5 h-full flex flex-col justify-between">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-[var(--bg-white)] p-6 rounded-none border border-[var(--border-15)] shadow-none space-y-5 h-full flex flex-col justify-between"
+            >
               <div className="space-y-5">
                 {/* Simulation Badge */}
                 <div className="flex justify-between items-center pb-3 border-b border-[var(--stone-border)]">
@@ -408,7 +441,7 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                       Cosecha Estimada
                     </span>
                     <span className="text-xl font-serif font-black text-[var(--text)] block mt-1.5">
-                      {simResult!.cropYield.toLocaleString("es-AR")}
+                      <AnimatedCounter value={simResult!.cropYield} suffix="" />
                     </span>
                     <span className="text-[10px] text-[var(--text3)] font-mono uppercase">kg / ha</span>
                   </div>
@@ -419,7 +452,7 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                       Margen Neto
                     </span>
                     <span className={`text-xl font-serif font-black block mt-1.5 ${simResult!.financialReturn >= 0 ? "text-emerald-800 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}`}>
-                      {simResult!.financialReturn >= 0 ? "+" : ""}${simResult!.financialReturn.toLocaleString("es-AR")}
+                      {simResult!.financialReturn >= 0 ? "+" : "-"}<AnimatedCounter value={Math.abs(simResult!.financialReturn)} suffix="" />
                     </span>
                     <span className="text-[10px] text-[var(--text3)] font-mono uppercase">USD / ha</span>
                   </div>
@@ -430,7 +463,7 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                       Puntaje Agro
                     </span>
                     <span className="text-xl font-serif font-black text-[var(--accent4)] block mt-1.5">
-                      {simResult!.sustainabilityScore} / 100
+                      <AnimatedCounter value={simResult!.sustainabilityScore} suffix="" /> / 100
                     </span>
                     <span className="text-[10px] text-[var(--text3)] font-mono uppercase">sustentable</span>
                   </div>
@@ -454,7 +487,7 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-xs">
                       <span className="font-serif font-bold text-[var(--text2)]">Eficiencia en Uso de Agua (EUA):</span>
-                      <span className="font-mono font-bold text-[var(--text)]">{simResult!.waterEfficiency}%</span>
+                      <span className="font-mono font-bold text-[var(--text)]"><AnimatedCounter value={simResult!.waterEfficiency} suffix="%" /></span>
                     </div>
                     <div className="w-full bg-[var(--stone-border)] h-1 rounded-none overflow-hidden">
                       <div
@@ -486,7 +519,7 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                   Los resultados son estimaciones basadas en parámetros promedio de la región.
                 </span>
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>

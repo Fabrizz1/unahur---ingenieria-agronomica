@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { SUBJECTS_DATA } from "./data";
 import { Subject } from "./types";
 
+import { Reveal } from "./components/Reveal";
 import { MaterialsSection } from "./components/MaterialsSection";
 import { ForumSection } from "./components/ForumSection";
 import { NewsSection } from "./components/NewsSection";
@@ -352,12 +353,31 @@ export default function App() {
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-black tracking-tight text-[var(--text)]">
             Ingeniería Agronómica <span className="font-serif italic font-normal text-[var(--accent3)]">UNAHUR</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--text2)] font-sans max-w-2xl leading-relaxed">
-            El saber es transformar.
-          </p>
-          <p className="text-[10px] sm:text-xs text-[var(--text3)] font-mono uppercase tracking-widest max-w-2xl">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-xs sm:text-sm text-[var(--text2)] font-sans max-w-2xl leading-relaxed"
+          >
+            {"El saber es transformar.".split("").map((char, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.03, delay: 0.5 + i * 0.035 }}
+              >
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.8 }}
+            className="text-[10px] sm:text-xs text-[var(--text3)] font-mono uppercase tracking-widest max-w-2xl"
+          >
             Volumen I · Edición 2026
-          </p>
+          </motion.p>
 
           {/* Theme Toggle */}
           <button
@@ -383,10 +403,12 @@ export default function App() {
               const Icon = tab.icon;
               const isSelected = activeTab === tab.id;
               return (
-                <button
+                <motion.button
                   key={tab.id}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`px-4 py-2 border transition-all cursor-pointer font-serif font-bold text-xs uppercase tracking-wider rounded-none ${
+                  className={`px-4 py-2 border transition-colors cursor-pointer font-serif font-bold text-xs uppercase tracking-wider rounded-none ${
                     isSelected
                       ? "bg-[var(--footer)] text-[var(--bg2)] dark:text-white border-[var(--border)]"
                       : "bg-[var(--bg3)] text-[var(--text)] border-[var(--border-15)] hover:border-[var(--border-50)] dark:hover:bg-[var(--bg2)]"
@@ -396,7 +418,7 @@ export default function App() {
                     <Icon className="w-3.5 h-3.5" />
                     <span>{tab.label}</span>
                   </span>
-                </button>
+                </motion.button>
               );
             })}
           </nav>
@@ -421,6 +443,7 @@ export default function App() {
         
         {/* LEFT COLUMN: ACTIVE INTERACTIVE MODULE */}
         <div className="flex-1 lg:max-w-[70%] space-y-6">
+          <Reveal key={activeTab}>
           {activeTab === "materiales" && (
             <MaterialsSection
               sharedMaterials={sharedMaterials}
@@ -462,11 +485,14 @@ export default function App() {
           {activeTab === "contacto" && (
             <ContactSection triggerNotification={triggerNotification} />
           )}
+          </Reveal>
         </div>
 
         {/* RIGHT COLUMN: SIDEBAR */}
         <div className="lg:w-[30%] space-y-8">
-          <BentoSidebar />
+          <Reveal delay={0.15}>
+            <BentoSidebar />
+          </Reveal>
         </div>
       </main>
 

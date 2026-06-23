@@ -1,7 +1,9 @@
 import React from "react";
 import { BookOpen, Search, Upload, ChevronRight, FileText, PlusCircle, AlertCircle } from "lucide-react";
+import { motion } from "motion/react";
 import { SUBJECTS_DATA } from "../data";
 import { SharedMaterial, Subject } from "../types";
+import { Reveal } from "./Reveal";
 
 interface MaterialsSectionProps {
   sharedMaterials: SharedMaterial[];
@@ -135,13 +137,14 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
             <p className="text-xs text-[var(--text3)] mt-1 font-sans">Probá removiendo filtros de año o ajustando las palabras clave.</p>
           </div>
         ) : (
-          filteredSubjects.map((subject) => {
+          filteredSubjects.map((subject, idx) => {
             const subjectMaterials = sharedMaterials.filter((m) => m.subjectId === subject.id);
             const isExpanded = expandedSubjectId === subject.id;
 
             return (
-              <div
-                key={subject.id}
+              <Reveal key={subject.id} delay={idx * 0.04} y={20}>
+              <motion.div
+                whileHover={isExpanded ? {} : { scale: 1.005 }}
                 className={`bg-[var(--bg3)] border transition-all duration-300 rounded-none overflow-hidden ${
                   isExpanded
                     ? "border-[var(--border)] ring-1 ring-[var(--text)]/5 bg-[var(--bg3)]"
@@ -275,7 +278,8 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
+              </Reveal>
             );
           })
         )}

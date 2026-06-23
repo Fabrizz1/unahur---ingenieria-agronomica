@@ -1,7 +1,9 @@
 import React from "react";
 import { MessageSquare, PlusCircle, Heart, Send } from "lucide-react";
+import { motion } from "motion/react";
 import { SUBJECTS_DATA } from "../data";
 import { ForumPost } from "../types";
+import { Reveal } from "./Reveal";
 
 interface ForumSectionProps {
   forumPosts: ForumPost[];
@@ -54,8 +56,9 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
           const subjectRef = SUBJECTS_DATA.find((s) => s.id === post.subjectId);
 
           return (
-            <div
-              key={post.id}
+            <Reveal key={post.id} y={20}>
+            <motion.div
+              whileHover={{ scale: 1.005 }}
               className="bg-[var(--bg3)] p-6 rounded-none border border-[var(--border-15)] shadow-none space-y-5 relative"
             >
               {/* Post Header */}
@@ -166,7 +169,8 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
                   <Send className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </div>
+            </motion.div>
+            </Reveal>
           );
         })}
       </div>
