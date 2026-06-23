@@ -40,7 +40,7 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
 
           <button
             onClick={() => setIsNewPostOpen(true)}
-            className="w-full sm:w-auto bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] font-serif font-bold text-xs px-5 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer flex items-center justify-center gap-2 shrink-0"
+            className="w-full sm:w-auto bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white dark:hover:bg-[var(--bg3)] font-serif font-bold text-xs px-5 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer flex items-center justify-center gap-2 shrink-0"
           >
             <PlusCircle className="w-3.5 h-3.5" />
             <span>Nueva Consulta</span>

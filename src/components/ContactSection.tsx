@@ -109,7 +109,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 <div className="pt-2 flex justify-end">
                   <button
                     type="submit"
-                    className="bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] font-serif font-bold text-xs px-6 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer flex items-center gap-2"
+                    className="bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white dark:hover:bg-[var(--bg3)] font-serif font-bold text-xs px-6 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer flex items-center gap-2"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Enviar mensaje</span>

@@ -403,7 +403,7 @@ export default function App() {
             exit={{ opacity: 0, y: -50 }}
             className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-none shadow-lg flex items-center gap-2 border text-xs font-mono uppercase tracking-wider font-semibold ${
               notification.type === "success"
-                ? "bg-[var(--footer)] text-[var(--bg2)] border-[var(--border)]"
+                ? "bg-[var(--footer)] text-[var(--bg2)] dark:text-white border-[var(--border)]"
                 : "bg-[var(--accent1)] text-[var(--text)] border-[var(--border-20)]"
             }`}
           >
@@ -461,8 +461,8 @@ export default function App() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`px-4 py-2 border transition-all cursor-pointer font-serif font-bold text-xs uppercase tracking-wider rounded-none ${
                     isSelected
-                      ? "bg-[var(--footer)] text-[var(--bg2)] border-[var(--border)]"
-                      : "bg-[var(--bg3)] text-[var(--text)] border-[var(--border-15)] hover:border-[var(--border-50)]"
+                      ? "bg-[var(--footer)] text-[var(--bg2)] dark:text-white border-[var(--border)]"
+                      : "bg-[var(--bg3)] text-[var(--text)] border-[var(--border-15)] hover:border-[var(--border-50)] dark:hover:bg-[var(--bg2)]"
                   }`}
                 >
                   <span className="flex items-center gap-2">
@@ -477,7 +477,7 @@ export default function App() {
       </header>
 
       {/* SUB-HERO INFO BANNER */}
-      <div className="bg-[var(--footer)] text-[var(--bg2)] text-[10px] py-2 px-4 border-b border-[var(--border-20)]">
+      <div className="bg-[var(--footer)] text-[var(--bg2)] dark:text-white text-[10px] py-2 px-4 border-b border-[var(--border-20)]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 font-mono uppercase tracking-wider">
           <div className="flex items-center gap-3">
             <span className="font-bold text-[var(--accent1)] bg-[var(--accent4)] px-2 py-0.5 text-[9px]">Grado</span>
@@ -548,7 +548,7 @@ export default function App() {
       {/* FOOTER */}
       <footer className="bg-[var(--footer)] text-[var(--text4)] py-12 border-t border-[var(--border)] mt-12 font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="flex items-center justify-center gap-2 text-[var(--bg2)] text-sm">
+          <div className="flex items-center justify-center gap-2 text-[var(--bg2)] dark:text-white text-sm">
             <Sprout className="w-5 h-5 text-[var(--accent1)]" />
             <span className="font-serif font-black tracking-widest uppercase">UNAHUR</span>
             <span className="font-light text-[var(--text3)]">| Departamento de Ciencias Aplicadas</span>

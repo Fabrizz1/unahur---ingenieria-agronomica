@@ -71,7 +71,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
                 className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-500"
                 referrerPolicy="no-referrer"
               />
-              <span className="absolute top-3 left-3 bg-[var(--footer)] text-[var(--bg2)] text-[9px] font-mono uppercase px-2 py-0.5 rounded-none font-bold">
+              <span className="absolute top-3 left-3 bg-[var(--footer)] text-[var(--bg2)] dark:text-white text-[9px] font-mono uppercase px-2 py-0.5 rounded-none font-bold">
                 {news.category}
               </span>
             </div>
@@ -107,7 +107,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
       {/* Featured Seminar Banner */}
       <div className="bg-[var(--accent1-40)] rounded-none p-6 md:p-8 border border-[var(--border-15)] flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
         <div className="space-y-2">
-          <span className="bg-[var(--footer)] text-[var(--bg2)] text-[9px] font-mono uppercase tracking-wider px-2 py-0.5">
+          <span className="bg-[var(--footer)] text-[var(--bg2)] dark:text-white text-[9px] font-mono uppercase tracking-wider px-2 py-0.5">
             Taller Optativo de Extensión
           </span>
           <h3 className="font-serif font-black text-[var(--text)] text-xl md:text-2xl leading-tight">
@@ -121,7 +121,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
           onClick={() =>
             triggerNotification("¡Tu inscripción fue procesada! Recibirás los detalles técnicos en tu casilla de alumno.")
           }
-          className="bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] font-serif font-bold text-xs px-5 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer shrink-0 self-stretch md:self-auto text-center"
+          className="bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white dark:hover:bg-[var(--bg3)] font-serif font-bold text-xs px-5 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer shrink-0 self-stretch md:self-auto text-center"
         >
           Anotarse (Cupos Limitados)
         </button>

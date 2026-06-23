@@ -62,7 +62,7 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
 
           <button
             onClick={() => setIsUploadOpen(true)}
-            className="w-full md:w-auto bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] font-serif font-bold text-xs px-5 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer flex items-center justify-center gap-2 shrink-0"
+            className="w-full md:w-auto bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white dark:hover:bg-[var(--bg3)] font-serif font-bold text-xs px-5 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer flex items-center justify-center gap-2 shrink-0"
           >
             <Upload className="w-3.5 h-3.5" />
             <span>Colaborar con un Apunte</span>
@@ -165,7 +165,7 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
                     <h3 className="font-serif font-black text-lg sm:text-xl text-[var(--text)] flex items-center gap-2 leading-tight">
                       {subject.name}
                       {subjectMaterials.length > 0 && (
-                        <span className="bg-[var(--footer)] text-[var(--bg2)] text-[10px] font-mono font-bold px-2 py-0.5">
+                        <span className="bg-[var(--footer)] text-[var(--bg2)] dark:text-white text-[10px] font-mono font-bold px-2 py-0.5">
                           {subjectMaterials.length} {subjectMaterials.length === 1 ? "apunte" : "apuntes"}
                         </span>
                       )}
@@ -260,7 +260,7 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
                                 </span>
                                 <button
                                   onClick={() => handleDownloadMaterial(mat.id, mat.title)}
-                                  className="bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] p-2 rounded-none transition-colors cursor-pointer border border-[var(--border)]"
+                                  className="bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white dark:hover:bg-[var(--bg3)] p-2 rounded-none transition-colors cursor-pointer border border-[var(--border)]"
                                   title="Descargar archivo"
                                 >
                                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
