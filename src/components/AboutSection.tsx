@@ -86,19 +86,6 @@ export const AboutSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-[var(--bg-white)] p-6 border border-[var(--border-15)] space-y-4">
-          <div className="bg-[var(--accent1)] p-3 w-fit">
-            <Sprout className="w-5 h-5 text-[var(--text)]" />
-          </div>
-          <h3 className="font-serif font-black text-lg text-[var(--text)]">
-            Stack Tecnológico
-          </h3>
-          <p className="text-xs text-[var(--text2)] font-sans leading-relaxed">
-            Construido con React + Vite + Tailwind CSS v4. Diseño editorial con tipografía moderna
-            (Plus Jakarta Sans + Playfair Display). Código abierto y
-            colaborativo.
-          </p>
-        </div>
       </div>
 
       {/* Original vision block */}
