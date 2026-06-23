@@ -409,8 +409,6 @@ export default function App() {
           <div className="flex items-center gap-3">
             <span className="font-bold text-[var(--accent1)] bg-[var(--accent4)] px-2 py-0.5 text-[9px]">Grado</span>
             <span>Plan de Estudios: Ingeniería Agronómica (5 Años)</span>
-            <span className="hidden sm:inline">|</span>
-            <span>Título Intermedio: Técnico Universitario en Producción Agropecuaria</span>
           </div>
           <div className="flex items-center gap-2 text-[var(--text3)]">
             <span>Sede Hurlingham, Origone 151</span>

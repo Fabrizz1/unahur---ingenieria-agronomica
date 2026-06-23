@@ -100,7 +100,7 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
               <option value="todos">Todos los Años (1° a 5°)</option>
               <option value="1">1° Año (Ciencias Básicas)</option>
               <option value="2">2° Año</option>
-              <option value="3">3° Año (Título Intermedio)</option>
+              <option value="3">3° Año</option>
               <option value="4">4° Año</option>
               <option value="5">5° Año (Egreso/TFI)</option>
             </select>

@@ -619,10 +619,6 @@ export const FAQ_DATA = [
     answer: "¡Sí, totalmente! La UNAHUR tiene una oferta de comisiones muy amplia en turnos mañana (8:00 a 12:00), tarde (12:00 a 16:00), tarde-noche (16:00 a 20:00) y noche (20:00 a 24:00) para facilitar que las personas que trabajan puedan estudiar. Las materias prácticas a veces requieren salidas de campo concertadas con anticipación los fines de semana."
   },
   {
-    question: "¿Tengo algún título intermedio?",
-    answer: "Sí. Al completar las materias correspondientes a los primeros 3 años de la carrera, obtenés el título intermedio de **Técnico/a Universitario/a en Producción Agropecuaria**, el cual tiene una excelente salida laboral directa en establecimientos ganaderos, agrícolas y hortícolas."
-  },
-  {
     question: "¿Dónde se realizan las prácticas de la carrera?",
     answer: "Se combinan prácticas en los laboratorios de química, biología y biotecnología de la UNAHUR (equipados con tecnología de punta), trabajo en parcelas demostrativas locales, visitas técnicas a campos agrícolas-ganaderos de la provincia de Buenos Aires y pasantías en el INTA y empresas agropecuarias de la zona."
   }
