@@ -353,7 +353,7 @@ export default function App() {
             Ingeniería Agronómica <span className="font-serif italic font-normal text-[var(--accent3)]">UNAHUR</span>
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text2)] font-sans max-w-2xl leading-relaxed">
-            Portal académico y técnico colaborativo para estudiantes y docentes de carreras agrarias.
+            El saber es transformar.
           </p>
 
           {/* Theme Toggle */}
