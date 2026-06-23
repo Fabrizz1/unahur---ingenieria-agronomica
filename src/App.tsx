@@ -355,6 +355,9 @@ export default function App() {
           <p className="text-xs sm:text-sm text-[var(--text2)] font-sans max-w-2xl leading-relaxed">
             El saber es transformar.
           </p>
+          <p className="text-[10px] sm:text-xs text-[var(--text3)] font-mono uppercase tracking-widest max-w-2xl">
+            Volumen I · Edición 2026
+          </p>
 
           {/* Theme Toggle */}
           <button
