@@ -368,12 +368,7 @@ export default function App() {
             {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           </button>
 
-          {/* Double border ticker-like row */}
-          <div className="w-full border-t border-b border-[var(--border-15)] py-3 flex flex-col sm:flex-row justify-between items-center gap-3 text-[10px] font-mono uppercase tracking-wider text-[var(--text3)]">
-            <span>Volumen III · Edición 2026</span>
-            <span className="text-[var(--text)] font-serif font-bold italic lowercase text-xs">Saber para transformar</span>
-            <span>Estación Hurlingham: {new Date().toLocaleDateString("es-AR")}</span>
-          </div>
+
 
           {/* Navigation Links */}
           <nav className="flex flex-wrap justify-center gap-2 pt-2">
