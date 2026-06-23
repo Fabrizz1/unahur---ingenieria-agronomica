@@ -27,7 +27,7 @@ import { BentoSidebar } from "./components/BentoSidebar";
 import { useTheme } from "./ThemeContext";
 
 // Key constants for local storage
-const LS_FORUM_POSTS = "unahur_agronomia_forum_posts";
+const LS_FORUM_POSTS = "unahur_agronomia_forum_posts_v2";
 const LS_STUDY_MATERIALS = "unahur_agronomia_materials";
 
 export interface ForumPost {
