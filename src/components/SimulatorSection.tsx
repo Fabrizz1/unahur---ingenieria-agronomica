@@ -282,7 +282,7 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
           <div className="space-y-1.5">
             <div className="flex justify-between items-center text-xs">
               <span className="font-serif font-bold text-[var(--text)] flex items-center gap-1">
-                <Droplet className="w-4 h-4 text-sky-700" />
+                <Droplet className="w-4 h-4 text-sky-700 dark:text-sky-400" />
                 Riego Suplementario
               </span>
               <span className="font-mono text-[11px] bg-[var(--stone-bg)] px-2 py-0.5 border border-[var(--stone-border)] font-bold">
@@ -418,7 +418,7 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                     <span className="text-[9px] font-mono uppercase tracking-wider text-[var(--accent3)] block font-bold">
                       Margen Neto
                     </span>
-                    <span className={`text-xl font-serif font-black block mt-1.5 ${simResult!.financialReturn >= 0 ? "text-emerald-800" : "text-rose-700"}`}>
+                    <span className={`text-xl font-serif font-black block mt-1.5 ${simResult!.financialReturn >= 0 ? "text-emerald-800 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}`}>
                       {simResult!.financialReturn >= 0 ? "+" : ""}${simResult!.financialReturn.toLocaleString("es-AR")}
                     </span>
                     <span className="text-[10px] text-[var(--text3)] font-mono uppercase">USD / ha</span>
@@ -441,10 +441,10 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                   <div className="flex justify-between items-center text-xs">
                     <span className="font-serif font-bold text-[var(--text2)]">Estado Estructural del Suelo:</span>
                     <span className={`font-mono text-[10px] uppercase font-bold px-2 py-0.5 border ${
-                      simResult!.soilHealthImpact === "Mejora" ? "bg-emerald-50 text-emerald-800 border-emerald-200" :
-                      simResult!.soilHealthImpact === "Estable" ? "bg-blue-50 text-blue-800 border-blue-200" :
-                      simResult!.soilHealthImpact === "Degradación Leve" ? "bg-amber-50 text-amber-800 border-amber-200" :
-                      "bg-rose-50 text-rose-800 border-rose-200"
+                      simResult!.soilHealthImpact === "Mejora" ? "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800" :
+                      simResult!.soilHealthImpact === "Estable" ? "bg-blue-50 text-blue-800 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800" :
+                      simResult!.soilHealthImpact === "Degradación Leve" ? "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800" :
+                      "bg-rose-50 text-rose-800 border-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800"
                     }`}>
                       {simResult!.soilHealthImpact}
                     </span>

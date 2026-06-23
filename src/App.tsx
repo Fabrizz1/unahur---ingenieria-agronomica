@@ -485,7 +485,7 @@ export default function App() {
             <span className="hidden sm:inline">|</span>
             <span>Título Intermedio: Técnico Universitario en Producción Agropecuaria</span>
           </div>
-          <div className="flex items-center gap-2 text-[var(--text4)]">
+          <div className="flex items-center gap-2 text-[var(--text3)]">
             <span>Sede Hurlingham, Origone 151</span>
           </div>
         </div>
@@ -551,12 +551,12 @@ export default function App() {
           <div className="flex items-center justify-center gap-2 text-[var(--bg2)] text-sm">
             <Sprout className="w-5 h-5 text-[var(--accent1)]" />
             <span className="font-serif font-black tracking-widest uppercase">UNAHUR</span>
-            <span className="font-light text-[var(--text4)]">| Departamento de Ciencias Aplicadas</span>
+            <span className="font-light text-[var(--text3)]">| Departamento de Ciencias Aplicadas</span>
           </div>
-          <p className="text-xs text-[var(--text3)] max-w-xl mx-auto leading-relaxed">
+          <p className="text-xs text-[var(--text2)] max-w-xl mx-auto leading-relaxed">
             Este portal ha sido diseñado con estándares de rigor editorial y sirve como espacio oficial de trabajo colaborativo para la comunidad estudiantil de Ingeniería Agronómica, Sede Hurlingham, Buenos Aires.
           </p>
-          <div className="text-[10px] text-[var(--text2)] font-mono uppercase tracking-widest pt-4 border-t border-[var(--border-5)] max-w-md mx-auto">
+          <div className="text-[10px] text-[var(--text3)] font-mono uppercase tracking-widest pt-4 border-t border-[var(--border-5)] max-w-md mx-auto">
             <span>© 2026 Universidad Nacional de Hurlingham. Licencia CC BY-NC-SA 4.0.</span>
           </div>
         </div>

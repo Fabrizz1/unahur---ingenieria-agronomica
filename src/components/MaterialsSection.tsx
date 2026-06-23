@@ -237,10 +237,10 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
                             >
                               <div className="flex items-center gap-3 overflow-hidden">
                                 <div className={`p-2.5 rounded-none shrink-0 border ${
-                                  mat.category === "Apunte" ? "bg-amber-50/50 text-amber-800 border-amber-200" :
-                                  mat.category === "Resumen" ? "bg-emerald-50 text-emerald-800 border-emerald-200" :
-                                  mat.category === "Examen" ? "bg-rose-50 text-rose-800 border-rose-200" :
-                                  "bg-stone-100 text-stone-800 border-stone-200"
+                                  mat.category === "Apunte" ? "bg-amber-50/50 text-amber-800 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800" :
+                                  mat.category === "Resumen" ? "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800" :
+                                  mat.category === "Examen" ? "bg-rose-50 text-rose-800 border-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800" :
+                                  "bg-stone-100 text-stone-800 border-stone-200 dark:bg-stone-900 dark:text-stone-300 dark:border-stone-700"
                                 }`}>
                                   <FileText className="w-4 h-4" />
                                 </div>
@@ -255,7 +255,7 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
                               </div>
 
                               <div className="flex items-center gap-2 shrink-0">
-                                <span className="text-[9px] font-mono text-[var(--text4)] tracking-wider">
+                                <span className="text-[9px] font-mono text-[var(--text3)] tracking-wider">
                                   {mat.downloads} descargas
                                 </span>
                                 <button
