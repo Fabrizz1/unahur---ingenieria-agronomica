@@ -18,11 +18,11 @@ import { SUBJECTS_DATA } from "./data";
 import { Subject } from "./types";
 
 import { Reveal } from "./components/Reveal";
+import { AgroecologiaSection } from "./components/AgroecologiaSection";
 import { MaterialsSection } from "./components/MaterialsSection";
 import { ForumSection } from "./components/ForumSection";
 import { NewsSection } from "./components/NewsSection";
 import { SimulatorSection } from "./components/SimulatorSection";
-import { AboutSection } from "./components/AboutSection";
 import { ContactSection } from "./components/ContactSection";
 import { BentoSidebar } from "./components/BentoSidebar";
 import { useTheme } from "./ThemeContext";
@@ -129,7 +129,7 @@ export default function App() {
   const { theme, toggleTheme } = useTheme();
 
   // Navigation & UI tabs State
-  const [activeTab, setActiveTab] = useState<"materiales" | "foro" | "noticias" | "simulador" | "sobre" | "contacto">("materiales");
+  const [activeTab, setActiveTab] = useState<"agroecologia" | "materiales" | "foro" | "noticias" | "simulador" | "contacto">("agroecologia");
 
   // Database State (with localStorage persistence)
   const [forumPosts, setForumPosts] = useState<ForumPost[]>([]);
@@ -350,25 +350,19 @@ export default function App() {
             <Sprout className="w-4 h-4 text-[var(--accent3)]" />
             <span>Universidad Nacional de Hurlingham</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-black tracking-tight text-[var(--text)]">
-            Ingeniería Agronómica <span className="font-serif italic font-normal text-[var(--accent3)]">UNAHUR</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-black tracking-tight text-[var(--text)] leading-tight">
+            Agroecología: <span className="text-[var(--accent3)]">Futuro y Solución</span>
           </h1>
+          <p className="text-xs sm:text-sm text-[var(--text2)] font-serif font-bold italic max-w-2xl">
+            Ingeniería Agronómica · UNAHUR
+          </p>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-xs sm:text-sm text-[var(--text2)] font-sans max-w-2xl leading-relaxed"
+            className="text-[10px] sm:text-xs text-[var(--text3)] font-mono uppercase tracking-widest max-w-2xl"
           >
-            {"El saber es transformar.".split("").map((char, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.03, delay: 0.5 + i * 0.035 }}
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            ))}
+            El saber es transformar.
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -393,11 +387,11 @@ export default function App() {
           {/* Navigation Links */}
           <nav className="flex flex-wrap justify-center gap-2 pt-2">
             {[
+              { id: "agroecologia", label: "Agroecología", icon: Sprout },
               { id: "materiales", label: "Biblioteca de Apuntes", icon: BookOpen },
               { id: "foro", label: "Foro de Debate", icon: MessageSquare },
               { id: "noticias", label: "Noticias y Salidas", icon: Calendar },
               { id: "simulador", label: "Simulador de Cultivos", icon: Sprout },
-              { id: "sobre", label: "Sobre el proyecto", icon: Sprout },
               { id: "contacto", label: "Contacto", icon: Mail }
             ].map((tab) => {
               const Icon = tab.icon;
@@ -444,6 +438,10 @@ export default function App() {
         {/* LEFT COLUMN: ACTIVE INTERACTIVE MODULE */}
         <div className="flex-1 lg:max-w-[70%] space-y-6">
           <Reveal key={activeTab}>
+          {activeTab === "agroecologia" && (
+            <AgroecologiaSection />
+          )}
+
           {activeTab === "materiales" && (
             <MaterialsSection
               sharedMaterials={sharedMaterials}
@@ -479,8 +477,6 @@ export default function App() {
           {activeTab === "simulador" && (
             <SimulatorSection triggerNotification={triggerNotification} />
           )}
-
-          {activeTab === "sobre" && <AboutSection />}
 
           {activeTab === "contacto" && (
             <ContactSection triggerNotification={triggerNotification} />
