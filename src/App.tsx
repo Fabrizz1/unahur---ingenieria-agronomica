@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { createClient } from "@supabase/supabase-js";
 import {
   BookOpen,
   MessageSquare,
@@ -127,6 +128,32 @@ const INITIAL_MATERIALS: SharedMaterial[] = [
 
 const FORO_API = "/api/foro";
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+const realtimeClient = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
+function mapRowFromDb(row: any): ForumPost {
+  return {
+    id: row.id,
+    title: row.title,
+    author: row.author,
+    authorRole: row.author_role ?? row.authorRole,
+    content: row.content,
+    tags: Array.isArray(row.tags) ? row.tags : (typeof row.tags === "string" ? JSON.parse(row.tags) : row.tags ?? []),
+    likes: row.likes ?? 0,
+    likedByUser: row.liked_by_user ?? row.likedByUser ?? false,
+    replies: Array.isArray(row.replies) ? row.replies.map((r: any) => ({
+      id: r.id,
+      author: r.author,
+      authorRole: r.author_role ?? r.authorRole,
+      content: r.content,
+      timestamp: r.timestamp,
+    })) : [],
+    timestamp: row.timestamp,
+    subjectId: row.subject_id ?? row.subjectId,
+  };
+}
+
 export default function App() {
   const { theme, toggleTheme } = useTheme();
 
@@ -174,32 +201,12 @@ export default function App() {
       return INITIAL_FORUM_POSTS;
     };
 
-    const mapApiRow = (row: any): ForumPost => ({
-      id: row.id,
-      title: row.title,
-      author: row.author,
-      authorRole: row.author_role ?? row.authorRole,
-      content: row.content,
-      tags: row.tags ?? [],
-      likes: row.likes ?? 0,
-      likedByUser: row.liked_by_user ?? row.likedByUser ?? false,
-      replies: (row.replies ?? []).map((r: any) => ({
-        id: r.id,
-        author: r.author,
-        authorRole: r.author_role ?? r.authorRole,
-        content: r.content,
-        timestamp: r.timestamp,
-      })),
-      timestamp: row.timestamp,
-      subjectId: row.subject_id ?? row.subjectId,
-    });
-
     const loadPosts = async () => {
       try {
         const res = await fetch(FORO_API, { signal: AbortSignal.timeout(8000) });
         const json = await res.json();
         if (json.success) {
-          const mapped = json.data.map(mapApiRow);
+          const mapped = json.data.map(mapRowFromDb);
           setForumPosts(mapped);
           localStorage.setItem(LS_FORUM_POSTS, JSON.stringify(mapped));
           return;
@@ -220,6 +227,25 @@ export default function App() {
       setSharedMaterials(INITIAL_MATERIALS);
       localStorage.setItem(LS_STUDY_MATERIALS, JSON.stringify(INITIAL_MATERIALS));
     }
+  }, []);
+
+  // Realtime: escucha posts nuevos de otros usuarios
+  useEffect(() => {
+    if (!realtimeClient) return;
+    const channel = realtimeClient
+      .channel("forum-posts")
+      .on("postgres_changes",
+        { event: "INSERT", schema: "public", table: "forum_posts" },
+        (payload: any) => {
+          const newPost = mapRowFromDb(payload.new);
+          setForumPosts((prev) => {
+            if (prev.some((p) => p.id === newPost.id)) return prev;
+            return [newPost, ...prev];
+          });
+        }
+      )
+      .subscribe();
+    return () => { channel.unsubscribe(); };
   }, []);
 
   // Save to LocalStorage helpers
