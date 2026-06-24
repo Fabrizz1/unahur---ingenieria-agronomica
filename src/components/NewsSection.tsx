@@ -3,7 +3,29 @@ import { Calendar, Heart, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 import { Reveal } from "./Reveal";
 
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=600";
+const FALLBACK_IMAGES = [
+  "https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&q=80&w=600",
+  "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=600",
+];
+
+function pickFallbackImage(id: string): string {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    hash |= 0;
+  }
+  return FALLBACK_IMAGES[Math.abs(hash) % FALLBACK_IMAGES.length];
+}
 
 const NEWS_DATA_FALLBACK = [
   {
@@ -12,7 +34,6 @@ const NEWS_DATA_FALLBACK = [
     category: "Institucional",
     date: "22 de Junio, 2026",
     summary: "La UNAHUR instaló sensores IoT de última generación para medir temperatura de suelo, radiación solar y humedad del aire, de acceso abierto para toda la carrera.",
-    image: "https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&q=80&w=600",
     likes: 42,
     link: "#",
     source: "UNAHUR"
@@ -23,7 +44,6 @@ const NEWS_DATA_FALLBACK = [
     category: "Prácticas",
     date: "18 de Junio, 2026",
     summary: "Estudiantes de Manejo Agroecológico de Adversidades visitaron el instituto nacional para capacitarse en técnicas de biocontrol usando parasitoides nativos de la pampa.",
-    image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=600",
     likes: 56,
     link: "#",
     source: "UNAHUR"
@@ -34,7 +54,6 @@ const NEWS_DATA_FALLBACK = [
     category: "Becas",
     date: "15 de Junio, 2026",
     summary: "Se seleccionarán 4 proyectos enfocados en la sustentabilidad del Cinturón Verde Bonaerense. Convocatoria abierta para alumnos de 4° y 5° año.",
-    image: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=600",
     likes: 29,
     link: "#",
     source: "UNAHUR"
@@ -75,7 +94,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
             category: item.category,
             date: item.date,
             summary: item.summary,
-            image: item.image || FALLBACK_IMAGE,
+            image: item.image || pickFallbackImage(item.id),
             likes: 0,
             link: item.link,
             source: item.source,
@@ -141,11 +160,11 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
             >
               <div className="h-44 relative bg-[var(--stone-bg)] border-b border-[var(--border-10)]">
                 <img
-                  src={item.image}
+                  src={item.image || pickFallbackImage(item.id)}
                   alt={item.title}
                   className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-500"
                   referrerPolicy="no-referrer"
-                  onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+                  onError={(e) => { (e.target as HTMLImageElement).src = pickFallbackImage(item.id + "-fallback"); }}
                 />
                 <span className="absolute top-3 left-3 bg-[var(--footer)] text-[var(--bg2)] dark:text-white text-[9px] font-mono uppercase px-2 py-0.5 rounded-none font-bold">
                   {item.category}
