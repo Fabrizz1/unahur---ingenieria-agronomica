@@ -198,7 +198,7 @@ export default function App() {
       try {
         const res = await fetch(FORO_API, { signal: AbortSignal.timeout(8000) });
         const json = await res.json();
-        if (json.success && json.data.length > 0) {
+        if (json.success) {
           const mapped = json.data.map(mapApiRow);
           setForumPosts(mapped);
           localStorage.setItem(LS_FORUM_POSTS, JSON.stringify(mapped));

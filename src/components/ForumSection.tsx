@@ -51,6 +51,23 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
       </div>
 
       {/* Forum Feed */}
+      {forumPosts.length === 0 ? (
+        <div className="text-center py-16 border border-[var(--border-10)] bg-[var(--bg2)]">
+          <MessageSquare className="w-8 h-8 text-[var(--text4)] mx-auto mb-3" />
+          <p className="text-xs text-[var(--text3)] font-mono uppercase tracking-wider font-semibold">
+            Todavía no hay consultas
+          </p>
+          <p className="text-[11px] text-[var(--text4)] mt-2 max-w-xs mx-auto leading-relaxed">
+            Sé el o la primera persona en compartir una duda técnica, organizar un grupo de estudio o abrir un debate de manejo agronómico.
+          </p>
+          <button
+            onClick={() => setIsNewPostOpen(true)}
+            className="mt-5 bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white text-xs px-5 py-2.5 font-serif font-bold uppercase tracking-wider border border-[var(--border)] transition-all cursor-pointer"
+          >
+            Crear primera consulta
+          </button>
+        </div>
+      ) : (
       <div className="space-y-6">
         {forumPosts.map((post) => {
           const subjectRef = SUBJECTS_DATA.find((s) => s.id === post.subjectId);
@@ -174,6 +191,7 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
           );
         })}
       </div>
+      )}
     </div>
   );
 };
