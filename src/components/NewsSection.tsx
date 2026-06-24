@@ -88,6 +88,36 @@ const NEWS_DATA_FALLBACK = [
     link: "#",
     source: "UNAHUR",
   },
+  {
+    id: "fallback-eventos-1",
+    title: "Congreso Argentino de Agroecología 2026: Soberanía Alimentaria y Cambio Climático",
+    section: "Eventos",
+    date: "28 de Junio, 2026",
+    summary: "Del 4 al 6 de agosto en la Facultad de Agronomía (UBA), con mesas de trabajo, ponencias de investigación y talleres prácticos sobre sistemas agroecológicos y mercados de cercanía.",
+    likes: 31,
+    link: "#",
+    source: "UNAHUR",
+  },
+  {
+    id: "fallback-formacion-1",
+    title: "Diplomatura en Agroecología Urbana y Periurbana — Inscripciones Abiertas",
+    section: "Formación",
+    date: "20 de Junio, 2026",
+    summary: "Formación anual con módulos sobre manejo de suelo, producción de alimentos, biodiversidad y organización comunitaria en entornos urbanos. Inicia en agosto con modalidad mixta.",
+    likes: 27,
+    link: "#",
+    source: "UNAHUR",
+  },
+  {
+    id: "fallback-becas-1",
+    title: "Beca de Investigación en Sistemas Agroforestales para estudiantes de grado",
+    section: "Becas",
+    date: "12 de Junio, 2026",
+    summary: "Convocatoria abierta del programa «Jóvenes en Ciencia» para estudiantes avanzados. Incluye estipendio mensual y pasantía en el Centro de Estudios Forestales Patagonia.",
+    likes: 44,
+    link: "#",
+    source: "UNAHUR",
+  },
 ];
 
 interface NewsItem {
@@ -106,7 +136,7 @@ interface NewsSectionProps {
   triggerNotification: (msg: string) => void;
 }
 
-const SECTION_ORDER = ["Todas", "Noticias", "Economía", "Política", "Agroecología", "Investigación"];
+const SECTION_ORDER = ["Todas", "Noticias", "Economía", "Política", "Agroecología", "Eventos", "Formación", "Becas", "Investigación"];
 
 const SECTION_ICONS: Record<string, string> = {
   Todas: "◎",
@@ -114,6 +144,9 @@ const SECTION_ICONS: Record<string, string> = {
   Economía: "▲",
   Política: "■",
   Agroecología: "✦",
+  Eventos: "★",
+  Formación: "▸",
+  Becas: "◈",
   Investigación: "◆",
 };
 

@@ -23,17 +23,31 @@ interface RssSource {
   section: string;
 }
 
-const POLITICA_KEYWORDS = [
-  "política", "políticas", "gobierno", "ley", "leyes", "decreto", "senado",
-  "diputados", "ministerio", "regulación", "congreso", "legislación",
-  "normativa", "presidente", "reforma", "elecciones", "legislativo",
-  "ejecutivo", "estado",
+const SECTION_RULES: { section: string; keywords: string[] }[] = [
+  {
+    section: "Becas",
+    keywords: ["beca", "becas", "convocatoria abierta", "subsidio", "subsidios", "ayuda económica", "financiamiento"],
+  },
+  {
+    section: "Eventos",
+    keywords: ["congreso", "simposio", "jornada", "seminario", "feria", "festival", "evento", "expo", "charla", "conversatorio", "webinar", "taller de", "talleres de"],
+  },
+  {
+    section: "Formación",
+    keywords: ["curso", "diplomatura", "capacitación", "formación", "materia optativa", "trayecto formativo", "cátedra", "a distancia"],
+  },
+  {
+    section: "Política",
+    keywords: ["política", "políticas", "gobierno", "ley", "leyes", "decreto", "senado", "diputados", "ministerio", "regulación", "congreso", "legislación", "normativa", "presidente", "reforma", "elecciones", "legislativo", "ejecutivo", "estado"],
+  },
 ];
 
 function detectSection(sourceSection: string, title: string, summary: string): string {
   const text = `${title} ${summary}`.toLowerCase();
-  for (const kw of POLITICA_KEYWORDS) {
-    if (text.includes(kw)) return "Política";
+  for (const rule of SECTION_RULES) {
+    for (const kw of rule.keywords) {
+      if (text.includes(kw)) return rule.section;
+    }
   }
   return sourceSection;
 }
