@@ -1,5 +1,5 @@
 import React from "react";
-import { BookOpen, Search, Upload, ChevronRight, FileText, PlusCircle, AlertCircle } from "lucide-react";
+import { BookOpen, Search, Upload, ChevronRight, FileText, PlusCircle, AlertCircle, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 import { SUBJECTS_DATA } from "../data";
 import { SharedMaterial, Subject } from "../types";
@@ -18,6 +18,7 @@ interface MaterialsSectionProps {
   setIsUploadOpen: (open: boolean) => void;
   setUploadSubjectId: (id: string) => void;
   handleDownloadMaterial: (id: string, title: string) => void;
+  handleDeleteMaterial: (id: string) => void;
 }
 
 export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
@@ -33,6 +34,7 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
   setIsUploadOpen,
   setUploadSubjectId,
   handleDownloadMaterial,
+  handleDeleteMaterial,
 }) => {
   // Filtering logic inside component
   const filteredSubjects = SUBJECTS_DATA.filter((subject) => {
@@ -269,6 +271,13 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
                                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                   </svg>
+                                </button>
+                                <button
+                                  onClick={() => { if (confirm("¿Eliminar este material?")) handleDeleteMaterial(mat.id); }}
+                                  className="p-2 rounded-none text-[var(--text4)] hover:text-red-500 transition-colors cursor-pointer hover:bg-red-50 dark:hover:bg-red-950/30"
+                                  title="Eliminar material"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                               </div>
                             </div>

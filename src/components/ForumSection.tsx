@@ -1,5 +1,5 @@
 import React from "react";
-import { MessageSquare, PlusCircle, Heart, Send } from "lucide-react";
+import { MessageSquare, PlusCircle, Heart, Send, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 import { SUBJECTS_DATA } from "../data";
 import { ForumPost } from "../types";
@@ -11,6 +11,7 @@ interface ForumSectionProps {
   setCommentInputs: React.Dispatch<React.SetStateAction<{ [postId: string]: string }>>;
   handleLikePost: (postId: string) => void;
   handleAddComment: (postId: string) => void;
+  handleDeletePost: (postId: string) => void;
   setIsNewPostOpen: (open: boolean) => void;
 }
 
@@ -20,6 +21,7 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
   setCommentInputs,
   handleLikePost,
   handleAddComment,
+  handleDeletePost,
   setIsNewPostOpen,
 }) => {
   return (
@@ -87,6 +89,13 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
                       {post.authorRole}
                     </span>
                     <span className="text-[11px] text-[var(--text3)]">· {post.timestamp}</span>
+                    <button
+                      onClick={() => { if (confirm("¿Eliminar esta consulta?")) handleDeletePost(post.id); }}
+                      className="ml-2 text-[var(--text4)] hover:text-red-500 transition-colors cursor-pointer"
+                      title="Eliminar consulta"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
                   </div>
                   <h3 className="font-serif font-black text-[var(--text)] text-lg sm:text-xl leading-snug">
                     {post.title}

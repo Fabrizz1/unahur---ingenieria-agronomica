@@ -54,6 +54,12 @@ export async function POST(request: Request) {
       return Response.json({ success: true, data: mapRow(data) });
     }
 
+    if (body.action === "delete") {
+      const { error } = await supabase.from("forum_posts").delete().eq("id", body.postId);
+      if (error) throw error;
+      return Response.json({ success: true });
+    }
+
     if (body.action === "comment") {
       const { data: post } = await supabase
         .from("forum_posts")

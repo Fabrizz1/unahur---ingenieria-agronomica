@@ -374,6 +374,27 @@ export default function App() {
     triggerNotification("Comentario publicado");
   };
 
+  // Handle Delete Forum Post
+  const handleDeletePost = async (postId: string) => {
+    try {
+      await fetch(FORO_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "delete", postId }),
+      });
+    } catch {}
+    const updated = forumPosts.filter(p => p.id !== postId);
+    savePostsToLS(updated);
+    triggerNotification("Consulta eliminada");
+  };
+
+  // Handle Delete Material
+  const handleDeleteMaterial = (materialId: string) => {
+    const updated = sharedMaterials.filter(m => m.id !== materialId);
+    saveMaterialsToLS(updated);
+    triggerNotification("Material eliminado");
+  };
+
   // Handle Download material
   const handleDownloadMaterial = (materialId: string, title: string) => {
     const updated = sharedMaterials.map(m => {
@@ -544,6 +565,7 @@ export default function App() {
               setIsUploadOpen={setIsUploadOpen}
               setUploadSubjectId={setUploadSubjectId}
               handleDownloadMaterial={handleDownloadMaterial}
+              handleDeleteMaterial={handleDeleteMaterial}
             />
           )}
 
@@ -554,6 +576,7 @@ export default function App() {
               setCommentInputs={setCommentInputs}
               handleLikePost={handleLikePost}
               handleAddComment={handleAddComment}
+              handleDeletePost={handleDeletePost}
               setIsNewPostOpen={setIsNewPostOpen}
             />
           )}
