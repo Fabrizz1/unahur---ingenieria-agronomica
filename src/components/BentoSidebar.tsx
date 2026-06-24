@@ -70,16 +70,13 @@ export const BentoSidebar: React.FC = () => {
         <div className="space-y-2 text-[11px] font-mono text-[var(--text2)]">
           <div className="flex items-center gap-2">
             <Clock className="w-3.5 h-3.5 text-[var(--accent3)]" />
-            <span>Atención: Lunes a Viernes de 9 a 20hs</span>
+            <span>Atención: 24 horas</span>
           </div>
           <div className="flex items-center gap-2">
             <Mail className="w-3.5 h-3.5 text-[var(--accent3)]" />
-            <span>agronomia@unahur.edu.ar</span>
+            <span>todavía no tenemos</span>
           </div>
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-3.5 h-3.5 text-[var(--accent3)]" />
-            <span>Origone 151, Edificio Malvinas</span>
-          </div>
+
         </div>
       </div>
     </div>
