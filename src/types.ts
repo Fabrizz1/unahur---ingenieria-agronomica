@@ -7,6 +7,8 @@ export interface Subject {
   description: string;
   hours: number;
   correlatives?: string[]; // Subject IDs that must be completed or cursadas
+  units?: string[];
+  bibliography?: string[];
 }
 
 export interface CareerPath {
