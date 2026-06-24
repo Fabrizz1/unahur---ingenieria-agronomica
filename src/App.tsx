@@ -125,13 +125,15 @@ const INITIAL_MATERIALS: SharedMaterial[] = [
   }
 ];
 
+const FORO_API = "/api/foro";
+
 export default function App() {
   const { theme, toggleTheme } = useTheme();
 
   // Navigation & UI tabs State
   const [activeTab, setActiveTab] = useState<"agroecologia" | "materiales" | "foro" | "noticias" | "simulador" | "contacto">("agroecologia");
 
-  // Database State (with localStorage persistence)
+  // Database State (with server + localStorage persistence)
   const [forumPosts, setForumPosts] = useState<ForumPost[]>([]);
   const [sharedMaterials, setSharedMaterials] = useState<SharedMaterial[]>([]);
 
@@ -162,19 +164,29 @@ export default function App() {
   // Success Feedbacks (Toasts/Notifications)
   const [notification, setNotification] = useState<{ message: string; type: "success" | "info" } | null>(null);
 
-  // On mount: Load from localStorage or set initial values
+  // On mount: Load from API (with localStorage fallback)
   useEffect(() => {
-    const savedPosts = localStorage.getItem(LS_FORUM_POSTS);
-    if (savedPosts) {
-      try {
-        setForumPosts(JSON.parse(savedPosts));
-      } catch (e) {
-        setForumPosts(INITIAL_FORUM_POSTS);
+    const loadFromLS = () => {
+      const savedPosts = localStorage.getItem(LS_FORUM_POSTS);
+      if (savedPosts) {
+        try { return JSON.parse(savedPosts); } catch { return INITIAL_FORUM_POSTS; }
       }
-    } else {
-      setForumPosts(INITIAL_FORUM_POSTS);
-      localStorage.setItem(LS_FORUM_POSTS, JSON.stringify(INITIAL_FORUM_POSTS));
-    }
+      return INITIAL_FORUM_POSTS;
+    };
+
+    const loadPosts = async () => {
+      try {
+        const res = await fetch(FORO_API, { signal: AbortSignal.timeout(8000) });
+        const json = await res.json();
+        if (json.success && json.data.length > 0) {
+          setForumPosts(json.data);
+          localStorage.setItem(LS_FORUM_POSTS, JSON.stringify(json.data));
+          return;
+        }
+      } catch {}
+      setForumPosts(loadFromLS());
+    };
+    loadPosts();
 
     const savedMaterials = localStorage.getItem(LS_STUDY_MATERIALS);
     if (savedMaterials) {
@@ -209,23 +221,33 @@ export default function App() {
   };
 
   // Handle Likes on forum
-  const handleLikePost = (postId: string) => {
-    const updated = forumPosts.map(post => {
-      if (post.id === postId) {
-        const liked = !post.likedByUser;
-        return {
-          ...post,
-          likedByUser: liked,
-          likes: liked ? post.likes + 1 : post.likes - 1
-        };
-      }
-      return post;
-    });
-    savePostsToLS(updated);
+  const handleLikePost = async (postId: string) => {
+    const liked = !forumPosts.find(p => p.id === postId)?.likedByUser;
+    try {
+      await fetch(FORO_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "like", postId, liked }),
+      });
+      const updated = forumPosts.map(post => {
+        if (post.id === postId) return { ...post, likedByUser: liked, likes: post.likes + (liked ? 1 : -1) };
+        return post;
+      });
+      savePostsToLS(updated);
+    } catch {
+      const updated = forumPosts.map(post => {
+        if (post.id === postId) {
+          const l = !post.likedByUser;
+          return { ...post, likedByUser: l, likes: l ? post.likes + 1 : post.likes - 1 };
+        }
+        return post;
+      });
+      savePostsToLS(updated);
+    }
   };
 
   // Handle New Forum Post Submit
-  const handleCreatePost = (e: React.FormEvent) => {
+  const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPostTitle.trim() || !newPostContent.trim()) return;
 
@@ -248,6 +270,21 @@ export default function App() {
       replies: []
     };
 
+    try {
+      await fetch(FORO_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newPost.title,
+          content: newPost.content,
+          tags: newPost.tags,
+          authorRole: newPost.authorRole,
+          subjectId: newPost.subjectId,
+          timestamp: newPost.timestamp,
+        }),
+      });
+    } catch {}
+
     savePostsToLS([newPost, ...forumPosts]);
     setIsNewPostOpen(false);
     setNewPostTitle("");
@@ -258,25 +295,29 @@ export default function App() {
   };
 
   // Handle Comment Submit
-  const handleAddComment = (postId: string) => {
+  const handleAddComment = async (postId: string) => {
     const text = commentInputs[postId];
     if (!text || !text.trim()) return;
 
+    const reply = {
+      id: `rep-${Date.now()}`,
+      author: "Vos (Estudiante)",
+      authorRole: "Estudiante de Agronomía",
+      content: text.trim(),
+      timestamp: "Hace unos instantes"
+    };
+
+    try {
+      await fetch(FORO_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "comment", postId, ...reply }),
+      });
+    } catch {}
+
     const updated = forumPosts.map(post => {
       if (post.id === postId) {
-        return {
-          ...post,
-          replies: [
-            ...post.replies,
-            {
-              id: `rep-${Date.now()}`,
-              author: "Vos (Estudiante)",
-              authorRole: "Estudiante de Agronomía",
-              content: text.trim(),
-              timestamp: "Hace unos instantes"
-            }
-          ]
-        };
+        return { ...post, replies: [...post.replies, reply] };
       }
       return post;
     });
