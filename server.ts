@@ -3,7 +3,7 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import Parser from "rss-parser";
 
-const parser = new Parser();
+const parser = new Parser({ timeout: 10000 });
 const CACHE_DURATION = 15 * 60 * 1000;
 let cache: { data: NewsItem[]; timestamp: number } | null = null;
 

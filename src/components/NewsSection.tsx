@@ -66,7 +66,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const res = await fetch("/api/noticias");
+        const res = await fetch("/api/noticias", { signal: AbortSignal.timeout(10000) });
         const json = await res.json();
         if (json.success && json.data.length > 0) {
           const mapped: NewsItem[] = json.data.map((item: any) => ({
