@@ -158,7 +158,9 @@ export default function App() {
   const { theme, toggleTheme } = useTheme();
 
   // Navigation & UI tabs State
-  const [activeTab, setActiveTab] = useState<"agroecologia" | "materiales" | "foro" | "noticias" | "simulador" | "contacto">("agroecologia");
+  const [activeTab, setActiveTab] = useState<"agroecologia" | "materiales" | "foro" | "noticias" | "simulador" | "contacto">(
+    () => (localStorage.getItem("agroweb_activeTab") as any) || "agroecologia"
+  );
 
   // Database State (with server + localStorage persistence)
   const [forumPosts, setForumPosts] = useState<ForumPost[]>([]);
@@ -247,6 +249,11 @@ export default function App() {
       .subscribe();
     return () => { channel.unsubscribe(); };
   }, []);
+
+  // Persist pestaña activa
+  useEffect(() => {
+    localStorage.setItem("agroweb_activeTab", activeTab);
+  }, [activeTab]);
 
   // Save to LocalStorage helpers
   const savePostsToLS = (updatedPosts: ForumPost[]) => {
