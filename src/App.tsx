@@ -174,13 +174,34 @@ export default function App() {
       return INITIAL_FORUM_POSTS;
     };
 
+    const mapApiRow = (row: any): ForumPost => ({
+      id: row.id,
+      title: row.title,
+      author: row.author,
+      authorRole: row.author_role ?? row.authorRole,
+      content: row.content,
+      tags: row.tags ?? [],
+      likes: row.likes ?? 0,
+      likedByUser: row.liked_by_user ?? row.likedByUser ?? false,
+      replies: (row.replies ?? []).map((r: any) => ({
+        id: r.id,
+        author: r.author,
+        authorRole: r.author_role ?? r.authorRole,
+        content: r.content,
+        timestamp: r.timestamp,
+      })),
+      timestamp: row.timestamp,
+      subjectId: row.subject_id ?? row.subjectId,
+    });
+
     const loadPosts = async () => {
       try {
         const res = await fetch(FORO_API, { signal: AbortSignal.timeout(8000) });
         const json = await res.json();
         if (json.success && json.data.length > 0) {
-          setForumPosts(json.data);
-          localStorage.setItem(LS_FORUM_POSTS, JSON.stringify(json.data));
+          const mapped = json.data.map(mapApiRow);
+          setForumPosts(mapped);
+          localStorage.setItem(LS_FORUM_POSTS, JSON.stringify(mapped));
           return;
         }
       } catch {}
