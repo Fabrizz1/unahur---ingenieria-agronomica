@@ -122,26 +122,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
         {/* Side info */}
         <div className="space-y-4">
-          <div className="bg-[var(--bg3)] border border-[var(--border-15)] p-5 space-y-3">
-            <h4 className="font-serif font-black text-xs text-[var(--text)] uppercase tracking-wider pb-2 border-b border-[var(--stone-border)]">
-              Vías Alternativas
-            </h4>
-            <div className="space-y-2 text-[11px] font-mono text-[var(--text2)]">
-              <p>
-                <span className="font-bold text-[var(--text)]">Email:</span>{" "}
-                agronomia@unahur.edu.ar
-              </p>
-              <p>
-                <span className="font-bold text-[var(--text)]">Dirección:</span>{" "}
-                Origone 151, Edificio Malvinas
-              </p>
-              <p>
-                <span className="font-bold text-[var(--text)]">Horarios:</span> Lun
-                a Vie 9:00 - 20:00
-              </p>
-            </div>
-          </div>
-
           <div className="bg-[var(--accent1-20)] border border-[var(--border-15)] p-5 space-y-3">
             <div className="flex items-center gap-2">
               <Sprout className="w-4 h-4 text-[var(--accent3)]" />
