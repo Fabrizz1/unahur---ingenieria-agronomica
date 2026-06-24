@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Calendar, Heart, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 import { Reveal } from "./Reveal";
@@ -29,41 +29,71 @@ function pickFallbackImage(id: string): string {
 
 const NEWS_DATA_FALLBACK = [
   {
-    id: "news-1",
+    id: "fallback-noticias-1",
     title: "Inauguración de la nueva Estación Agroclimatológica Digital en el Campus",
-    category: "Institucional",
+    section: "Noticias",
     date: "22 de Junio, 2026",
     summary: "La UNAHUR instaló sensores IoT de última generación para medir temperatura de suelo, radiación solar y humedad del aire, de acceso abierto para toda la carrera.",
     likes: 42,
     link: "#",
-    source: "UNAHUR"
+    source: "UNAHUR",
   },
   {
-    id: "news-2",
+    id: "fallback-noticias-2",
     title: "Visita de campo al INTA Castelar: Manejo de Plagas en Horticultura",
-    category: "Prácticas",
+    section: "Noticias",
     date: "18 de Junio, 2026",
     summary: "Estudiantes de Manejo Agroecológico de Adversidades visitaron el instituto nacional para capacitarse en técnicas de biocontrol usando parasitoides nativos de la pampa.",
     likes: 56,
     link: "#",
-    source: "UNAHUR"
+    source: "UNAHUR",
   },
   {
-    id: "news-3",
+    id: "fallback-economia-1",
     title: "Abierta la Convocatoria de Becas de Estímulo a la Investigación Agraria",
-    category: "Becas",
+    section: "Economía",
     date: "15 de Junio, 2026",
     summary: "Se seleccionarán 4 proyectos enfocados en la sustentabilidad del Cinturón Verde Bonaerense. Convocatoria abierta para alumnos de 4° y 5° año.",
     likes: 29,
     link: "#",
-    source: "UNAHUR"
-  }
+    source: "UNAHUR",
+  },
+  {
+    id: "fallback-politica-1",
+    title: "Nueva Ley de Presupuestos Mínimos para la Agricultura Familiar en debate legislativo",
+    section: "Política",
+    date: "10 de Junio, 2026",
+    summary: "El Congreso debate un proyecto de ley que establece un marco regulatorio para la agricultura familiar, incluyendo acceso a tierras, créditos blandos y asistencia técnica estatal.",
+    likes: 34,
+    link: "#",
+    source: "UNAHUR",
+  },
+  {
+    id: "fallback-agroecologia-1",
+    title: "Taller de Conservación de Semillas Nativas en la Huerta Comunidad Ferroviaria",
+    section: "Agroecología",
+    date: "5 de Junio, 2026",
+    summary: "Se realizó un taller gratuito de conservación de semillas criollas y nativas, abierto a toda la comunidad, con enfoque en la recuperación de variedades locales y soberanía alimentaria.",
+    likes: 48,
+    link: "#",
+    source: "UNAHUR",
+  },
+  {
+    id: "fallback-investigacion-1",
+    title: "Ensayo comparativo de rendimiento entre cultivos de cobertura y barbecho químico en la Pampa Ondulada",
+    section: "Investigación",
+    date: "1 de Junio, 2026",
+    summary: "Un estudio conjunto entre UNAHUR e INTA evaluó el impacto de diferentes cultivos de cobertura sobre la materia orgánica del suelo, la retención hídrica y el rendimiento del cultivo subsiguiente de maíz.",
+    likes: 22,
+    link: "#",
+    source: "UNAHUR",
+  },
 ];
 
 interface NewsItem {
   id: string;
   title: string;
-  category: string;
+  section: string;
   date: string;
   summary: string;
   image: string;
@@ -76,11 +106,23 @@ interface NewsSectionProps {
   triggerNotification: (msg: string) => void;
 }
 
+const SECTION_ORDER = ["Todas", "Noticias", "Economía", "Política", "Agroecología", "Investigación"];
+
+const SECTION_ICONS: Record<string, string> = {
+  Todas: "◎",
+  Noticias: "●",
+  Economía: "▲",
+  Política: "■",
+  Agroecología: "✦",
+  Investigación: "◆",
+};
+
 export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification }) => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
   const [localLikes, setLocalLikes] = useState<Record<string, number>>({});
+  const [activeSection, setActiveSection] = useState("Todas");
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -91,7 +133,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
           const mapped: NewsItem[] = json.data.map((item: any) => ({
             id: item.id,
             title: item.title,
-            category: item.category,
+            section: item.section || "Noticias",
             date: item.date,
             summary: item.summary,
             image: item.image || pickFallbackImage(item.id),
@@ -107,6 +149,16 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
     };
     fetchNews().finally(() => setLoading(false));
   }, []);
+
+  const sections = useMemo(() => {
+    const unique = Array.from(new Set(news.map((item) => item.section)));
+    return SECTION_ORDER.filter((s) => s === "Todas" || unique.includes(s));
+  }, [news]);
+
+  const filteredNews = useMemo(() => {
+    if (activeSection === "Todas") return news;
+    return news.filter((item) => item.section === activeSection);
+  }, [news, activeSection]);
 
   const handleLike = (id: string, title: string) => {
     setLikedMap((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -131,9 +183,28 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
             Cartelera de Noticias y Salidas
           </h2>
           <p className="text-xs text-[var(--text2)] font-sans max-w-xl leading-relaxed">
-            Noticias del sector agropecuario argentino actualizadas en tiempo real desde INTA, Infocampo, Bichos de Campo, Agritotal, FAO y TodoAgro.
+            Noticias del agro argentino organizadas por sección — actualizadas desde INTA, Infocampo, Bichos de Campo, Agroecología en Red, FAO y más.
           </p>
         </div>
+
+        {!loading && sections.length > 1 && (
+          <div className="flex flex-wrap gap-1.5 pt-4">
+            {sections.map((sec) => (
+              <button
+                key={sec}
+                onClick={() => setActiveSection(sec)}
+                className={`px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider border transition-all cursor-pointer ${
+                  activeSection === sec
+                    ? "bg-[var(--footer)] text-[var(--bg2)] dark:text-white border-[var(--border)] font-bold"
+                    : "bg-[var(--bg2)] text-[var(--text3)] border-[var(--border-10)] hover:border-[var(--border-35)] hover:text-[var(--text)]"
+                }`}
+              >
+                <span className="mr-1.5">{SECTION_ICONS[sec] || "●"}</span>
+                {sec}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -150,9 +221,15 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
             </div>
           ))}
         </div>
+      ) : filteredNews.length === 0 ? (
+        <div className="text-center py-12 border border-[var(--border-10)] bg-[var(--bg2)]">
+          <p className="text-xs text-[var(--text3)] font-mono uppercase tracking-wider">
+            No hay noticias en esta sección
+          </p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {news.map((item) => (
+          {filteredNews.map((item) => (
             <Reveal key={item.id} y={20}>
             <motion.div
               whileHover={{ scale: 1.015 }}
@@ -167,7 +244,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ triggerNotification })
                   onError={(e) => { (e.target as HTMLImageElement).src = pickFallbackImage(item.id + "-fallback"); }}
                 />
                 <span className="absolute top-3 left-3 bg-[var(--footer)] text-[var(--bg2)] dark:text-white text-[9px] font-mono uppercase px-2 py-0.5 rounded-none font-bold">
-                  {item.category}
+                  {item.section}
                 </span>
               </div>
 
