@@ -1,9 +1,10 @@
 import React from "react";
-import { MessageSquare, PlusCircle, Heart, Send, Trash2 } from "lucide-react";
+import { MessageSquare, PlusCircle, Heart, Send, Trash2, LogIn } from "lucide-react";
 import { motion } from "motion/react";
 import { SUBJECTS_DATA } from "../data";
 import { ForumPost } from "../types";
 import { Reveal } from "./Reveal";
+import type { User } from "@supabase/supabase-js";
 
 interface ForumSectionProps {
   forumPosts: ForumPost[];
@@ -13,6 +14,8 @@ interface ForumSectionProps {
   handleAddComment: (postId: string) => void;
   handleDeletePost: (postId: string) => void;
   setIsNewPostOpen: (open: boolean) => void;
+  user: User | null;
+  isAdmin: boolean;
 }
 
 export const ForumSection: React.FC<ForumSectionProps> = ({
@@ -23,6 +26,8 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
   handleAddComment,
   handleDeletePost,
   setIsNewPostOpen,
+  user,
+  isAdmin,
 }) => {
   return (
     <div className="space-y-8" id="forum-section">
@@ -46,8 +51,11 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
             onClick={() => setIsNewPostOpen(true)}
             className="w-full sm:w-auto bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white dark:hover:bg-[var(--bg3)] font-serif font-bold text-xs px-5 py-3 rounded-none uppercase tracking-wider transition-all border border-[var(--border)] cursor-pointer flex items-center justify-center gap-2 shrink-0"
           >
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Nueva Consulta</span>
+            {user ? (
+              <><PlusCircle className="w-3.5 h-3.5" /><span>Nueva Consulta</span></>
+            ) : (
+              <><LogIn className="w-3.5 h-3.5" /><span>Ingresá para publicar</span></>
+            )}
           </button>
         </div>
       </div>
@@ -64,15 +72,17 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
           </p>
           <button
             onClick={() => setIsNewPostOpen(true)}
-            className="mt-5 bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white text-xs px-5 py-2.5 font-serif font-bold uppercase tracking-wider border border-[var(--border)] transition-all cursor-pointer"
+            className="mt-5 bg-[var(--footer)] hover:bg-[var(--accent4)] text-[var(--bg2)] dark:text-white text-xs px-5 py-2.5 font-serif font-bold uppercase tracking-wider border border-[var(--border)] transition-all cursor-pointer flex items-center gap-2 mx-auto"
           >
-            Crear primera consulta
+            {user ? <><PlusCircle className="w-3.5 h-3.5" /> Crear primera consulta</> : <><LogIn className="w-3.5 h-3.5" /> Ingresá para publicar</>}
           </button>
         </div>
       ) : (
       <div className="space-y-6">
         {forumPosts.map((post) => {
           const subjectRef = SUBJECTS_DATA.find((s) => s.id === post.subjectId);
+          const isOwner = user && post.userId === user.id;
+          const canDelete = user && (post.userId === user.id || isAdmin);
 
           return (
             <Reveal key={post.id} y={20}>
@@ -84,18 +94,22 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-10)] pb-4">
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2 text-xs">
-                    <span className="font-serif italic font-bold text-[var(--text)]">{post.author}</span>
+                    <span className="font-serif italic font-bold text-[var(--text)]">
+                      {user && post.userEmail === user.email ? "Vos" : post.author}
+                    </span>
                     <span className="bg-[var(--accent2)] text-[var(--accent4)] text-[9px] font-mono uppercase px-2 py-0.5 font-bold">
                       {post.authorRole}
                     </span>
                     <span className="text-[11px] text-[var(--text3)]">· {post.timestamp}</span>
-                    <button
-                      onClick={() => { if (confirm("¿Eliminar esta consulta?")) handleDeletePost(post.id); }}
-                      className="ml-2 text-[var(--text4)] hover:text-red-500 transition-colors cursor-pointer"
-                      title="Eliminar consulta"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
+                    {canDelete && (
+                      <button
+                        onClick={() => handleDeletePost(post.id)}
+                        className="text-[var(--text4)] hover:text-red-500 transition-colors cursor-pointer"
+                        title="Eliminar post"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                   <h3 className="font-serif font-black text-[var(--text)] text-lg sm:text-xl leading-snug">
                     {post.title}
@@ -158,7 +172,9 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
                     {post.replies.map((reply, index) => (
                       <div key={reply.id} className={`pt-4 ${index === 0 ? "pt-0 border-t-0" : ""}`}>
                         <div className="flex items-center gap-2 text-xs mb-1.5">
-                          <span className="font-serif font-black text-[var(--text)]">{reply.author}</span>
+                          <span className="font-serif font-black text-[var(--text)]">
+                            {user && reply.author === user.email ? "Vos" : reply.author}
+                          </span>
                           <span className="bg-[var(--accent2)] text-[var(--accent4)] text-[9px] px-1.5 py-0.2 font-mono uppercase">
                             {reply.authorRole}
                           </span>
@@ -177,18 +193,19 @@ export const ForumSection: React.FC<ForumSectionProps> = ({
               <div className="flex items-center gap-2 pt-2 border-t border-[var(--border-5)]">
                 <input
                   type="text"
-                  placeholder="Sumá tu comentario o aporte técnico..."
+                  placeholder={user ? "Sumá tu comentario o aporte técnico..." : "Ingresá para comentar..."}
                   value={commentInputs[post.id] || ""}
                   onChange={(e) =>
                     setCommentInputs({ ...commentInputs, [post.id]: e.target.value })
                   }
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") handleAddComment(post.id);
+                    if (e.key === "Enter" && user) handleAddComment(post.id);
                   }}
                   className="flex-1 bg-[var(--bg-white)] text-xs px-3.5 py-3 rounded-none border border-[var(--border-15)] focus:outline-none focus:ring-1 focus:ring-[var(--border)] focus:border-[var(--border)] font-sans"
+                  onClick={() => { if (!user) setIsNewPostOpen(true); }}
                 />
                 <button
-                  onClick={() => handleAddComment(post.id)}
+                  onClick={() => user ? handleAddComment(post.id) : setIsNewPostOpen(true)}
                   className="bg-[var(--footer)] hover:bg-[var(--accent4)] text-white p-3 rounded-none border border-[var(--border)] transition-colors cursor-pointer shrink-0"
                   title="Enviar respuesta"
                 >

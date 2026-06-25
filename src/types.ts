@@ -1,12 +1,12 @@
 export interface Subject {
   id: string;
   name: string;
-  year: number; // 1 to 5
+  year: number;
   term: "1° Cuatrimestre" | "2° Cuatrimestre" | "Anual";
   area: "Ciencias Básicas" | "Suelos y Clima" | "Producción Vegetal" | "Producción Animal" | "Tecnología e Ingeniería" | "Socioeconomía y Extensión";
   description: string;
   hours: number;
-  correlatives?: string[]; // Subject IDs that must be completed or cursadas
+  correlatives?: string[];
   units?: string[];
   bibliography?: string[];
 }
@@ -29,18 +29,18 @@ export type Season = "Primavera-Verano" | "Otoño-Invierno";
 export interface SimulationConfig {
   cropType: CropType;
   soilType: SoilType;
-  irrigationLevel: number; // 0 (none) to 100 (maximum)
-  fertilizerLevel: number; // 0 to 100
+  irrigationLevel: number;
+  fertilizerLevel: number;
   pestControl: "Ecológico" | "Químico Integrado" | "Ninguno";
   season: Season;
 }
 
 export interface SimulationResult {
-  cropYield: number; // kg/ha
-  waterEfficiency: number; // %
+  cropYield: number;
+  waterEfficiency: number;
   soilHealthImpact: "Mejora" | "Estable" | "Degradación Leve" | "Degradación Alta";
-  financialReturn: number; // USD/ha profit or loss
-  sustainabilityScore: number; // 0 to 100
+  financialReturn: number;
+  sustainabilityScore: number;
   feedback: string[];
 }
 
@@ -61,6 +61,8 @@ export interface SharedMaterial {
   downloads: number;
   link: string;
   timestamp: string;
+  userId?: string;
+  userEmail?: string;
 }
 
 export interface ForumPost {
@@ -81,4 +83,6 @@ export interface ForumPost {
   }[];
   timestamp: string;
   subjectId?: string;
+  userId?: string;
+  userEmail?: string;
 }

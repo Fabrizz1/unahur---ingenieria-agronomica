@@ -6,6 +6,7 @@ export const config = {
 
 const supabaseUrl = process.env.SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_ANON_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 function mapRow(row: any) {
@@ -14,6 +15,16 @@ function mapRow(row: any) {
     tags: typeof row.tags === "string" ? JSON.parse(row.tags) : row.tags ?? [],
     replies: typeof row.replies === "string" ? JSON.parse(row.replies) : row.replies ?? [],
   };
+}
+
+async function getCurrentUser(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return null;
+  const token = authHeader.replace("Bearer ", "");
+  if (!token) return null;
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data?.user) return null;
+  return data.user;
 }
 
 export async function GET() {
@@ -32,6 +43,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const currentUser = await getCurrentUser(request);
     const body = await request.json();
 
     if (body.action === "like") {
@@ -55,6 +67,20 @@ export async function POST(request: Request) {
     }
 
     if (body.action === "delete") {
+      if (!currentUser) {
+        return Response.json({ success: false, error: "No autenticado" }, { status: 401 });
+      }
+      const { data: post } = await supabase
+        .from("forum_posts")
+        .select("user_id")
+        .eq("id", body.postId)
+        .single();
+      if (!post) {
+        return Response.json({ success: false, error: "Post no encontrado" }, { status: 404 });
+      }
+      if (post.user_id && post.user_id !== currentUser.id) {
+        return Response.json({ success: false, error: "No autorizado" }, { status: 403 });
+      }
       const { error } = await supabase.from("forum_posts").delete().eq("id", body.postId);
       if (error) throw error;
       return Response.json({ success: true });
@@ -72,8 +98,8 @@ export async function POST(request: Request) {
       const existing = typeof post.replies === "string" ? JSON.parse(post.replies) : post.replies ?? [];
       const reply = {
         id: `rep-${Date.now()}`,
-        author: body.author || "Vos (Estudiante)",
-        author_role: body.authorRole || "Estudiante de Agronomía",
+        author: currentUser?.email || body.author || "Anónimo",
+        author_role: currentUser ? "Estudiante de Agronomía" : (body.authorRole || "Estudiante de Agronomía"),
         content: body.content,
         timestamp: body.timestamp || "Hace unos instantes",
       };
@@ -90,7 +116,7 @@ export async function POST(request: Request) {
     const newPost = {
       id: `post-${Date.now()}`,
       title: body.title,
-      author: body.author || "Vos (Estudiante)",
+      author: currentUser?.email || body.author || "Anónimo",
       author_role: body.authorRole || "Estudiante de 1° año",
       content: body.content,
       tags: JSON.stringify(body.tags?.length ? body.tags : ["General"]),
@@ -99,6 +125,8 @@ export async function POST(request: Request) {
       replies: JSON.stringify([]),
       timestamp: body.timestamp || new Date().toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" }),
       subject_id: body.subjectId || null,
+      user_id: currentUser?.id || null,
+      user_email: currentUser?.email || null,
     };
 
     const { data, error } = await supabase.from("forum_posts").insert(newPost).select().single();

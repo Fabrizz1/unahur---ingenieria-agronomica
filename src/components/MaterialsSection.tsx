@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { SUBJECTS_DATA } from "../data";
 import { SharedMaterial, Subject } from "../types";
 import { Reveal } from "./Reveal";
+import { User } from "@supabase/supabase-js";
 
 interface MaterialsSectionProps {
   sharedMaterials: SharedMaterial[];
@@ -19,6 +20,8 @@ interface MaterialsSectionProps {
   setUploadSubjectId: (id: string) => void;
   handleDownloadMaterial: (id: string, title: string) => void;
   handleDeleteMaterial: (id: string) => void;
+  user: User | null;
+  isAdmin: boolean;
 }
 
 export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
@@ -35,6 +38,8 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
   setUploadSubjectId,
   handleDownloadMaterial,
   handleDeleteMaterial,
+  user,
+  isAdmin,
 }) => {
   // Filtering logic inside component
   const filteredSubjects = SUBJECTS_DATA.filter((subject) => {
@@ -272,6 +277,7 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                   </svg>
                                 </button>
+                                {(isAdmin || (user && mat.userId && mat.userId === user.id)) && (
                                 <button
                                   onClick={() => { if (confirm("¿Eliminar este material?")) handleDeleteMaterial(mat.id); }}
                                   className="p-2 rounded-none text-[var(--text4)] hover:text-red-500 transition-colors cursor-pointer hover:bg-red-50 dark:hover:bg-red-950/30"
@@ -279,6 +285,7 @@ export const MaterialsSection: React.FC<MaterialsSectionProps> = ({
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
                                 </button>
+                                )}
                               </div>
                             </div>
                           ))}

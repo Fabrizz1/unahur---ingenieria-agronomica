@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { createClient } from "@supabase/supabase-js";
 import {
   BookOpen,
   MessageSquare,
@@ -12,11 +11,18 @@ import {
   CheckCircle2,
   AlertCircle,
   Sun,
-  Moon
+  Moon,
+  LogIn,
+  LogOut,
+  User,
+  Shield,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { SUBJECTS_DATA } from "./data";
-import { Subject } from "./types";
+import { Subject, ForumPost } from "./types";
+import { supabase } from "./supabaseClient";
+import { useAuth } from "./AuthContext";
+import { AuthModal } from "./components/AuthModal";
 
 import { Reveal } from "./components/Reveal";
 import { AgroecologiaSection } from "./components/AgroecologiaSection";
@@ -27,30 +33,10 @@ import { SimulatorSection } from "./components/SimulatorSection";
 import { ContactSection } from "./components/ContactSection";
 import { BentoSidebar } from "./components/BentoSidebar";
 import { useTheme } from "./ThemeContext";
+import { AdminPanel } from "./components/AdminPanel";
 
 // Key constants for local storage
 const LS_FORUM_POSTS = "unahur_agronomia_forum_posts_v2";
-const LS_STUDY_MATERIALS = "unahur_agronomia_materials";
-
-export interface ForumPost {
-  id: string;
-  title: string;
-  author: string;
-  authorRole: "Estudiante de 1° año" | "Estudiante de 3° año" | "Egresado/a" | "Ayudante de Cátedra" | "Técnico Universitario";
-  content: string;
-  tags: string[];
-  likes: number;
-  likedByUser: boolean;
-  replies: {
-    id: string;
-    author: string;
-    authorRole: string;
-    content: string;
-    timestamp: string;
-  }[];
-  timestamp: string;
-  subjectId?: string;
-}
 
 export interface SharedMaterial {
   id: string;
@@ -67,70 +53,7 @@ export interface SharedMaterial {
 // Prepopulated Forum Posts — vacío (los usuarios crean sus propios posts)
 const INITIAL_FORUM_POSTS: ForumPost[] = [];
 
-// Prepopulated Shared Materials
-const INITIAL_MATERIALS: SharedMaterial[] = [
-  {
-    id: "mat-f1",
-    subjectId: "edafologia-suelos",
-    title: "Guía de Determinación de Humedad del Suelo por Gravimetría",
-    category: "Guía Práctica",
-    author: "Cátedra de Edafología",
-    fileSize: "1.2 MB",
-    downloads: 145,
-    link: "#",
-    timestamp: "15 May 2026"
-  },
-  {
-    id: "mat-f2",
-    subjectId: "edafologia-suelos",
-    title: "Apunte Teoría de Coloides y Capacidad de Intercambio Catiónico (CIC)",
-    category: "Apunte",
-    author: "Santiago Rossi",
-    fileSize: "3.4 MB",
-    downloads: 210,
-    link: "#",
-    timestamp: "12 Jun 2026"
-  },
-  {
-    id: "mat-f3",
-    subjectId: "climatologia-fenologia",
-    title: "Recopilación de Efemérides de Heladas en Hurlingham (2010-2025)",
-    category: "Resumen",
-    author: "Ing. Climatología",
-    fileSize: "850 KB",
-    downloads: 98,
-    link: "#",
-    timestamp: "02 Jun 2026"
-  },
-  {
-    id: "mat-f4",
-    subjectId: "quimica-general",
-    title: "Modelo de examen libre y respuestas - Química General",
-    category: "Examen",
-    author: "Matias G.",
-    fileSize: "2.1 MB",
-    downloads: 320,
-    link: "#",
-    timestamp: "28 May 2026"
-  },
-  {
-    id: "mat-f5",
-    subjectId: "manejo-adversidades",
-    title: "Ficha Técnica: Manejo Agroecológico de Malezas en el Cinturón Hortícola",
-    category: "Guía Práctica",
-    author: "Programa Extensión UNAHUR",
-    fileSize: "4.8 MB",
-    downloads: 184,
-    link: "#",
-    timestamp: "20 Jun 2026"
-  }
-];
-
 const FORO_API = "/api/foro";
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-const realtimeClient = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 function mapRowFromDb(row: any): ForumPost {
   return {
@@ -151,20 +74,24 @@ function mapRowFromDb(row: any): ForumPost {
     })) : [],
     timestamp: row.timestamp,
     subjectId: row.subject_id ?? row.subjectId,
+    userId: row.user_id,
+    userEmail: row.user_email,
   };
 }
 
 export default function App() {
   const { theme, toggleTheme } = useTheme();
+  const { user, session, isAdmin, loading: authLoading } = useAuth();
 
   // Navigation & UI tabs State
-  const [activeTab, setActiveTab] = useState<"agroecologia" | "materiales" | "foro" | "noticias" | "simulador" | "contacto">(
+  const [activeTab, setActiveTab] = useState<"agroecologia" | "materiales" | "foro" | "noticias" | "simulador" | "contacto" | "admin">(
     () => (localStorage.getItem("agroweb_activeTab") as any) || "agroecologia"
   );
 
   // Database State (with server + localStorage persistence)
   const [forumPosts, setForumPosts] = useState<ForumPost[]>([]);
   const [sharedMaterials, setSharedMaterials] = useState<SharedMaterial[]>([]);
+  const [materialsLoading, setMaterialsLoading] = useState(true);
 
   // Search & Filter State
   const [searchSubject, setSearchSubject] = useState("");
@@ -172,8 +99,11 @@ export default function App() {
   const [selectedArea, setSelectedArea] = useState<string | "todos">("todos");
   const [expandedSubjectId, setExpandedSubjectId] = useState<string | null>(null);
 
-  // New Post State
+  // Modals
   const [isNewPostOpen, setIsNewPostOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  // New Post State
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [newPostTagString, setNewPostTagString] = useState("");
@@ -218,23 +148,33 @@ export default function App() {
     };
     loadPosts();
 
-    const savedMaterials = localStorage.getItem(LS_STUDY_MATERIALS);
-    if (savedMaterials) {
-      try {
-        setSharedMaterials(JSON.parse(savedMaterials));
-      } catch (e) {
-        setSharedMaterials(INITIAL_MATERIALS);
-      }
-    } else {
-      setSharedMaterials(INITIAL_MATERIALS);
-      localStorage.setItem(LS_STUDY_MATERIALS, JSON.stringify(INITIAL_MATERIALS));
-    }
+    fetch("/api/materials")
+      .then((r) => r.json())
+      .then((j) => {
+        if (j.success) {
+          const mapped = j.data.map((row: any) => ({
+            id: row.id,
+            subjectId: row.subject_id,
+            title: row.title,
+            category: row.category,
+            author: row.author,
+            fileSize: row.file_size ?? row.fileSize,
+            downloads: row.downloads ?? 0,
+            link: row.link ?? "#",
+            timestamp: row.timestamp,
+            userId: row.user_id,
+            userEmail: row.user_email,
+          }));
+          setSharedMaterials(mapped);
+        }
+      })
+      .finally(() => setMaterialsLoading(false));
   }, []);
 
   // Realtime: escucha posts nuevos de otros usuarios
   useEffect(() => {
-    if (!realtimeClient) return;
-    const channel = realtimeClient
+    if (!supabase) return;
+    const channel = supabase
       .channel("forum-posts")
       .on("postgres_changes",
         { event: "INSERT", schema: "public", table: "forum_posts" },
@@ -261,9 +201,8 @@ export default function App() {
     localStorage.setItem(LS_FORUM_POSTS, JSON.stringify(updatedPosts));
   };
 
-  const saveMaterialsToLS = (updatedMaterials: SharedMaterial[]) => {
+  const saveMaterialsState = (updatedMaterials: SharedMaterial[]) => {
     setSharedMaterials(updatedMaterials);
-    localStorage.setItem(LS_STUDY_MATERIALS, JSON.stringify(updatedMaterials));
   };
 
   // Show quick status toast
@@ -274,13 +213,29 @@ export default function App() {
     }, 4000);
   };
 
+  const getAuthHeaders = (): Record<string, string> => {
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
+    return headers;
+  };
+
+  const handleNewPostClick = () => {
+    if (!user) {
+      setIsAuthModalOpen(true);
+    } else {
+      setIsNewPostOpen(true);
+    }
+  };
+
   // Handle Likes on forum
   const handleLikePost = async (postId: string) => {
     const liked = !forumPosts.find(p => p.id === postId)?.likedByUser;
     try {
       await fetch(FORO_API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ action: "like", postId, liked }),
       });
       const updated = forumPosts.map(post => {
@@ -313,7 +268,7 @@ export default function App() {
     const newPost: ForumPost = {
       id: `post-${Date.now()}`,
       title: newPostTitle,
-      author: "Vos (Estudiante)",
+      author: user?.email || "Anónimo",
       authorRole: newPostAuthorRole,
       content: newPostContent,
       tags: tagsArray.length > 0 ? tagsArray : ["General"],
@@ -321,13 +276,15 @@ export default function App() {
       likedByUser: true,
       timestamp: "Hace unos instantes",
       subjectId: newPostSubject || undefined,
-      replies: []
+      replies: [],
+      userId: user?.id,
+      userEmail: user?.email,
     };
 
     try {
       await fetch(FORO_API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           title: newPost.title,
           content: newPost.content,
@@ -355,7 +312,7 @@ export default function App() {
 
     const reply = {
       id: `rep-${Date.now()}`,
-      author: "Vos (Estudiante)",
+      author: user?.email || "Anónimo",
       authorRole: "Estudiante de Agronomía",
       content: text.trim(),
       timestamp: "Hace unos instantes"
@@ -364,7 +321,7 @@ export default function App() {
     try {
       await fetch(FORO_API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ action: "comment", postId, ...reply }),
       });
     } catch {}
@@ -383,10 +340,13 @@ export default function App() {
 
   // Handle Delete Forum Post
   const handleDeletePost = async (postId: string) => {
+    const post = forumPosts.find(p => p.id === postId);
+    if (post && post.userId && post.userId !== user?.id && !isAdmin) return;
+
     try {
       await fetch(FORO_API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ action: "delete", postId }),
       });
     } catch {}
@@ -396,26 +356,40 @@ export default function App() {
   };
 
   // Handle Delete Material
-  const handleDeleteMaterial = (materialId: string) => {
+  const handleDeleteMaterial = async (materialId: string) => {
+    try {
+      await fetch("/api/materials", {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ action: "delete", id: materialId }),
+      });
+    } catch {}
     const updated = sharedMaterials.filter(m => m.id !== materialId);
-    saveMaterialsToLS(updated);
+    saveMaterialsState(updated);
     triggerNotification("Material eliminado");
   };
 
   // Handle Download material
-  const handleDownloadMaterial = (materialId: string, title: string) => {
+  const handleDownloadMaterial = async (materialId: string, title: string) => {
+    try {
+      await fetch("/api/materials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "download", id: materialId }),
+      });
+    } catch {}
     const updated = sharedMaterials.map(m => {
       if (m.id === materialId) {
         return { ...m, downloads: m.downloads + 1 };
       }
       return m;
     });
-    saveMaterialsToLS(updated);
+    saveMaterialsState(updated);
     triggerNotification(`Descargando "${title}"...`, "info");
   };
 
   // Handle Create shared material
-  const handleUploadMaterial = (e: React.FormEvent) => {
+  const handleUploadMaterial = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!uploadSubjectId || !uploadTitle.trim()) return;
 
@@ -424,14 +398,29 @@ export default function App() {
       subjectId: uploadSubjectId,
       title: uploadTitle,
       category: uploadCategory,
-      author: uploadAuthor.trim() || "Estudiante Colaborador",
+      author: uploadAuthor.trim() || user?.email || "Estudiante Colaborador",
       fileSize: `${(Math.random() * 4 + 1).toFixed(1)} MB`,
       downloads: 0,
       link: "#",
       timestamp: "Hoy"
     };
 
-    saveMaterialsToLS([newMat, ...sharedMaterials]);
+    try {
+      await fetch("/api/materials", {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          subjectId: uploadSubjectId,
+          title: uploadTitle,
+          category: uploadCategory,
+          author: uploadAuthor.trim() || user?.email || "Estudiante Colaborador",
+          fileSize: newMat.fileSize,
+          timestamp: "Hoy",
+        }),
+      });
+    } catch {}
+
+    saveMaterialsState([newMat, ...sharedMaterials]);
     setIsUploadOpen(false);
     setUploadTitle("");
     setUploadAuthor("");
@@ -489,16 +478,38 @@ export default function App() {
             Volumen I · Edición 2026
           </motion.p>
 
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-none border border-[var(--border-15)] bg-[var(--bg3)] hover:bg-[var(--accent1)] text-[var(--text)] transition-colors cursor-pointer"
-            aria-label="Toggle theme"
-          >
-            {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-none border border-[var(--border-15)] bg-[var(--bg3)] hover:bg-[var(--accent1)] text-[var(--text)] transition-colors cursor-pointer"
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </button>
 
-
+            {/* Auth Button */}
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono text-[var(--text2)] hidden sm:inline">{user.email}</span>
+                <button
+                  onClick={() => supabase.auth.signOut()}
+                  className="p-2 rounded-none border border-[var(--border-15)] bg-[var(--bg3)] hover:bg-red-100 dark:hover:bg-red-900/30 text-[var(--text)] transition-colors cursor-pointer"
+                  title="Cerrar sesión"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="p-2 rounded-none border border-[var(--border-15)] bg-[var(--bg3)] hover:bg-[var(--accent1)] text-[var(--text)] transition-colors cursor-pointer"
+                title="Iniciar sesión"
+              >
+                <LogIn className="w-4 h-4" />
+              </button>
+            )}
+          </div>
 
           {/* Navigation Links */}
           <nav className="flex flex-wrap justify-center gap-2 pt-2">
@@ -508,7 +519,8 @@ export default function App() {
               { id: "foro", label: "Foro de Debate", icon: MessageSquare },
               { id: "noticias", label: "Noticias y Salidas", icon: Calendar },
               { id: "simulador", label: "Simulador de Cultivos", icon: Sprout },
-              { id: "contacto", label: "Contacto", icon: Mail }
+              { id: "contacto", label: "Contacto", icon: Mail },
+              ...(isAdmin ? [{ id: "admin" as const, label: "Admin", icon: Shield }] : []),
             ].map((tab) => {
               const Icon = tab.icon;
               const isSelected = activeTab === tab.id;
@@ -573,6 +585,8 @@ export default function App() {
               setUploadSubjectId={setUploadSubjectId}
               handleDownloadMaterial={handleDownloadMaterial}
               handleDeleteMaterial={handleDeleteMaterial}
+              user={user}
+              isAdmin={isAdmin}
             />
           )}
 
@@ -584,7 +598,9 @@ export default function App() {
               handleLikePost={handleLikePost}
               handleAddComment={handleAddComment}
               handleDeletePost={handleDeletePost}
-              setIsNewPostOpen={setIsNewPostOpen}
+              setIsNewPostOpen={handleNewPostClick}
+              user={user}
+              isAdmin={isAdmin}
             />
           )}
 
@@ -598,6 +614,10 @@ export default function App() {
 
           {activeTab === "contacto" && (
             <ContactSection triggerNotification={triggerNotification} />
+          )}
+
+          {activeTab === "admin" && (
+            <AdminPanel />
           )}
           </Reveal>
         </div>
@@ -627,10 +647,17 @@ export default function App() {
         </div>
       </footer>
 
-      {/* MODAL 1: NEW FORUM POST */}
+      {/* MODAL 1: AUTH */}
+      <AnimatePresence>
+        {isAuthModalOpen && (
+          <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+        )}
+      </AnimatePresence>
+
+      {/* MODAL 2: NEW FORUM POST */}
       <AnimatePresence>
         {isNewPostOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4   bg-[var(--overlay)] backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--overlay)] backdrop-blur-xs">
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -651,6 +678,10 @@ export default function App() {
               </div>
 
               <form onSubmit={handleCreatePost} className="p-6 space-y-4">
+                <div className="text-[10px] font-mono text-[var(--text3)] bg-[var(--bg2)] p-2 border border-[var(--border-10)]">
+                  Publicando como: <span className="font-bold text-[var(--text)]">{user?.email}</span>
+                </div>
+
                 <div className="space-y-1">
                   <label className="text-xs font-serif font-bold text-[var(--text)] block">Título de la Consulta</label>
                   <input
@@ -738,10 +769,10 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* MODAL 2: UPLOAD MATERIAL */}
+      {/* MODAL 3: UPLOAD MATERIAL */}
       <AnimatePresence>
         {isUploadOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4   bg-[var(--overlay)] backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--overlay)] backdrop-blur-xs">
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}

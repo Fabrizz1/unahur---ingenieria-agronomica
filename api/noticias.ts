@@ -1,10 +1,13 @@
 import Parser from "rss-parser";
+import { createClient } from "@supabase/supabase-js";
 
-export const config = {
-  maxDuration: 15,
-};
+export const config = { maxDuration: 15 };
 
 const parser = new Parser({ timeout: 5000 });
+
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface NewsItem {
   id: string;
@@ -52,7 +55,7 @@ function detectSection(sourceSection: string, title: string, summary: string): s
   return sourceSection;
 }
 
-const RSS_SOURCES: RssSource[] = [
+const HARDCODED_SOURCES: RssSource[] = [
   { url: "https://www.infocampo.com.ar/feed/", name: "Infocampo", section: "Noticias" },
   { url: "https://bichosdecampo.com/feed/", name: "Bichos de Campo", section: "Noticias" },
   { url: "https://www.todoagro.com.ar/rss-feed-de-noticias/", name: "TodoAgro", section: "Noticias" },
@@ -63,6 +66,17 @@ const RSS_SOURCES: RssSource[] = [
   { url: "https://inta.gob.ar/rss.xml", name: "INTA", section: "Investigación" },
   { url: "https://www.fao.org/feeds/fao-newsroom-rss", name: "FAO", section: "Investigación" },
 ];
+
+async function getRssSources(): Promise<RssSource[]> {
+  try {
+    const { data } = await supabase
+      .from("rss_sources")
+      .select("name, url, section")
+      .eq("enabled", true);
+    if (data && data.length > 0) return data;
+  } catch {}
+  return HARDCODED_SOURCES;
+}
 
 function extractImage(item: any): string {
   if (item.enclosure?.url) return item.enclosure.url;
@@ -149,6 +163,7 @@ const FALLBACK_NEWS: NewsItem[] = [
 
 export default async function handler(_req: any, res: any) {
   try {
+    const RSS_SOURCES = await getRssSources();
     const promises = RSS_SOURCES.map(async (source) => {
       try {
         const feed = await parser.parseURL(source.url);
