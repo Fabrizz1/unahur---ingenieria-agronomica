@@ -564,7 +564,7 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
         
         {/* LEFT COLUMN: ACTIVE INTERACTIVE MODULE */}
-        <div className="flex-1 lg:max-w-[70%] space-y-6">
+        <div className={`flex-1 space-y-6 ${activeTab === "simulador" ? "" : "lg:max-w-[70%]"}`}>
           <Reveal key={activeTab}>
           {activeTab === "agroecologia" && (
             <AgroecologiaSection />
@@ -623,7 +623,7 @@ export default function App() {
         </div>
 
         {/* RIGHT COLUMN: SIDEBAR */}
-        <div className="lg:w-[30%] space-y-8">
+        <div className={`lg:w-[30%] space-y-8 ${activeTab === "simulador" ? "hidden lg:hidden" : ""}`}>
           <Reveal delay={0.15}>
             <BentoSidebar />
           </Reveal>

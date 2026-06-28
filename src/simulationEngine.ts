@@ -358,6 +358,242 @@ function calcSeasonFactor(
 }
 
 // ══════════════════════════════════════════════════════════════
+//  POLICULTIVO MILPA (Maíz + Poroto + Zapallo)
+// ══════════════════════════════════════════════════════════════
+function calcPolyculture(
+  crop: CropProperties,
+  config: SimulationConfig,
+  overallFactor: number,
+): {
+  polycultureYield: number;
+  details: string;
+  ler: number;
+  feedback: string[];
+} {
+  const fb: string[] = [];
+
+  const maiz = getCropById("maiz");
+  const poroto = getCropById("poroto");
+  const zapallo = getCropById("zapallo");
+
+  if (!maiz || !poroto || !zapallo) {
+    return { polycultureYield: 0, details: "", ler: 1, feedback: [] };
+  }
+
+  const maizeYield = Math.round(
+    maiz.baseYield + (maiz.maxYield - maiz.baseYield) * overallFactor * 0.85,
+  );
+  const beanYield = Math.round(
+    poroto.baseYield + (poroto.maxYield - poroto.baseYield) * overallFactor * 0.9,
+  );
+  const squashYield = Math.round(
+    zapallo.baseYield + (zapallo.maxYield - zapallo.baseYield) * overallFactor * 0.8,
+  );
+
+  const maizePoly = Math.round(maizeYield * 0.6);
+  const beanPoly = Math.round(beanYield * 0.5);
+  const squashPoly = Math.round(squashYield * 0.4);
+
+  const combinedYield = maizePoly + beanPoly + squashPoly;
+
+  const ler =
+    (maizePoly / Math.max(maizeYield, 1)) +
+    (beanPoly / Math.max(beanYield, 1)) +
+    (squashPoly / Math.max(squashYield, 1));
+
+  const maizeRevenue = maizePoly * maiz.pricePerKg;
+  const beanRevenue = beanPoly * poroto.pricePerKg;
+  const squashRevenue = squashPoly * zapallo.pricePerKg;
+  const totalRevenue = maizeRevenue + beanRevenue + squashRevenue;
+
+  fb.push(
+    `🌽🫘🎃 SISTEMA MILPA (Tres Hermanas): Rendimiento combinado de ${combinedYield.toLocaleString("es-AR")} kg/ha.`,
+  );
+  fb.push(
+    `   Maíz: ${maizePoly.toLocaleString("es-AR")} kg · Poroto: ${beanPoly.toLocaleString("es-AR")} kg · Zapallo: ${squashPoly.toLocaleString("es-AR")} kg`,
+  );
+  fb.push(
+    `   LER (Land Equivalent Ratio): ${ler.toFixed(2)} ${ler > 1 ? "✅ Ventaja del policultivo (+" + Math.round((ler - 1) * 100) + "% eficiencia de uso de la tierra)" : "⚠️ Similar al monocultivo"}`,
+  );
+  fb.push(
+    `   Ingreso total milpa: USD ${Math.round(totalRevenue).toLocaleString("es-AR")}/ha (maíz: USD ${Math.round(maizeRevenue)}, poroto: USD ${Math.round(beanRevenue)}, zapallo: USD ${Math.round(squashRevenue)})`,
+  );
+  fb.push(
+    `   Beneficios agroecológicos: el maíz tutorea al poroto, el poroto fija N₂ para los 3 cultivos, el zapallo cubre el suelo reduciendo malezas y evapotranspiración.`,
+  );
+
+  return {
+    polycultureYield: combinedYield,
+    details: `🌽 ${maizePoly.toLocaleString("es-AR")} kg maíz · 🫘 ${beanPoly.toLocaleString("es-AR")} kg poroto · 🎃 ${squashPoly.toLocaleString("es-AR")} kg zapallo`,
+    ler: parseFloat(ler.toFixed(2)),
+    feedback: fb,
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SOBERANÍA ALIMENTARIA
+// ══════════════════════════════════════════════════════════════
+function calcFoodSovereignty(
+  crop: CropProperties,
+  finalYield: number,
+  config: SimulationConfig,
+): { proteinPerHa: number; caloriesPerHa: number; peopleFed: number; localScore: number; feedback: string[] } {
+  const fb: string[] = [];
+
+  const nutritionMap: Record<string, { protein: number; calories: number }> = {
+    maiz:     { protein: 95,   calories: 3650 },
+    trigo:    { protein: 120,  calories: 3400 },
+    arroz:    { protein: 70,   calories: 3600 },
+    sorgo:    { protein: 110,  calories: 3400 },
+    cebada:   { protein: 110,  calories: 3400 },
+    soja:     { protein: 360,  calories: 4460 },
+    girasol:  { protein: 200,  calories: 5800 },
+    poroto:   { protein: 220,  calories: 3400 },
+    arveja:   { protein: 240,  calories: 3400 },
+    garbanzo: { protein: 190,  calories: 3600 },
+    tomate:   { protein: 18,   calories: 180 },
+    papa:     { protein: 20,   calories: 770 },
+    lechuga:  { protein: 15,   calories: 150 },
+    cebolla:  { protein: 11,   calories: 400 },
+    frutilla: { protein: 7,    calories: 320 },
+    zapallo:  { protein: 10,   calories: 260 },
+    alfalfa:  { protein: 160,  calories: 2300 },
+    avena:    { protein: 110,  calories: 3400 },
+    vid:      { protein: 7,    calories: 690 },
+    manzano:  { protein: 3,    calories: 520 },
+    algodon:  { protein: 0,    calories: 0 },
+    caña:     { protein: 0,    calories: 3800 },
+    lavanda:  { protein: 0,    calories: 0 },
+    menta:    { protein: 0,    calories: 0 },
+    eucalipto:{ protein: 0,    calories: 0 },
+  };
+
+  const nut = nutritionMap[crop.id];
+  if (!nut || nut.calories === 0) {
+    fb.push(
+      `🥗 Soberanía alimentaria: ${crop.name} no es un cultivo alimentario directo.`,
+    );
+    return { proteinPerHa: 0, caloriesPerHa: 0, peopleFed: 0, localScore: 50, feedback: fb };
+  }
+
+  const proteinKg = parseFloat(((finalYield / 1000) * nut.protein).toFixed(1));
+  const caloriesKcal = Math.round((finalYield / 1000) * nut.calories * 1000);
+  const peopleFed = parseFloat((caloriesKcal / 365 / 2500).toFixed(1));
+
+  let localScore = 50;
+  if (config.fertilizationType === "Orgánico (Compost)" || config.fertilizationType === "Orgánico (Biol)") localScore += 15;
+  if (config.fertilizationType === "Biofertilizantes") localScore += 10;
+  if (config.pestControl === "MIP Agroecológico" || config.pestControl === "Control Biológico") localScore += 10;
+  if (config.pestControl === "Ecológico (Preventivo)") localScore += 12;
+  if (config.useCoverCrop) localScore += 5;
+  if (config.useRotation) localScore += 5;
+  if (config.usePolyculture) localScore += 10;
+  if (config.fertilizationType === "Sintético NPK") localScore -= 10;
+
+  localScore = Math.max(0, Math.min(100, localScore));
+
+  fb.push(
+    `🥗 SOBERANÍA ALIMENTARIA: ${proteinKg} kg proteína/ha · ${caloriesKcal.toLocaleString("es-AR")} kcal/ha · ` +
+    `alimenta a ~${peopleFed} personas/ha/año · Puntaje local: ${localScore}/100`,
+  );
+  if (localScore >= 70) {
+    fb.push(`   ✅ Producción local y agroecológica: fortalece la soberanía alimentaria del territorio.`);
+  } else if (localScore >= 40) {
+    fb.push(`   🔄 Producción mixta: puede mejorar su autonomía con más prácticas agroecológicas.`);
+  } else {
+    fb.push(`   ⚠️ Dependencia alta de insumos externos: la soberanía alimentaria está comprometida.`);
+  }
+
+  return {
+    proteinPerHa: proteinKg,
+    caloriesPerHa: caloriesKcal,
+    peopleFed,
+    localScore,
+    feedback: fb,
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ENERGÍA FÓSIL AHORRADA
+// ══════════════════════════════════════════════════════════════
+function calcEnergyBalance(
+  crop: CropProperties,
+  finalYield: number,
+  config: SimulationConfig,
+  totalWaterUsed: number,
+): { energyInput: number; energyOutput: number; netBalance: number; efficiency: number; dieselSaved: number; feedback: string[] } {
+  const fb: string[] = [];
+
+  const fertEnergy: Record<string, number> = {
+    "Orgánico (Compost)": 5,
+    "Orgánico (Biol)": 4,
+    "Biofertilizantes": 3,
+    "Sintético NPK": 55,
+    "Mixto": 30,
+  };
+
+  const energyContent: Record<string, number> = {
+    maiz: 15.5, trigo: 14.5, arroz: 15.0, sorgo: 14.0, cebada: 14.0,
+    soja: 18.5, girasol: 25.0, poroto: 14.0, arveja: 14.0, garbanzo: 14.0,
+    tomate: 2.5, papa: 3.5, lechuga: 1.5, cebolla: 2.0, frutilla: 2.0,
+    zapallo: 2.0, alfalfa: 8.0, avena: 14.0, vid: 3.0, manzano: 2.5,
+    algodon: 10.0, caña: 8.0, lavanda: 5.0, menta: 5.0, eucalipto: 15.0,
+  };
+
+  const fertEnergyRate = fertEnergy[config.fertilizationType] ?? 20;
+  const nEnergy = config.fertilizerLevel * fertEnergyRate;
+
+  const irrEnergyMap: Record<string, number> = {
+    Goteo: 0.5, Aspersión: 0.7, Surco: 0.2, Nebulización: 0.6,
+  };
+  const irrKwh = totalWaterUsed * (irrEnergyMap[config.irrigationMethod] ?? 0.5);
+  const irrEnergy = Math.round(irrKwh * 3.6);
+
+  let machineryEnergy = 800;
+  if (config.pestControl === "Químico Integrado") machineryEnergy += 200;
+  if (config.useCoverCrop) machineryEnergy += 300;
+  if (config.useCompostTea) machineryEnergy += 100;
+
+  const totalInput = Math.round(nEnergy + irrEnergy + machineryEnergy);
+
+  const cropEnergyContent = energyContent[crop.id] ?? 8;
+  const output = Math.round((finalYield / 1000) * cropEnergyContent * 1000);
+
+  const netBalance = output - totalInput;
+  const efficiency = parseFloat((output / Math.max(totalInput, 1)).toFixed(1));
+
+  const convInput = (config.fertilizerLevel || 40) * 55 +
+    totalWaterUsed * 0.2 * 3.6 +
+    1500;
+  const dieselSaved = parseFloat(
+    Math.max(0, ((convInput - totalInput) / 38)).toFixed(1),
+  );
+
+  fb.push(
+    `⚡ ENERGÍA: Input ${totalInput.toLocaleString("es-AR")} MJ/ha · Output ${output.toLocaleString("es-AR")} MJ/ha · Balance neto: ${netBalance >= 0 ? "+" : ""}${netBalance.toLocaleString("es-AR")} MJ/ha`,
+  );
+  fb.push(
+    `   Eficiencia energética: ${efficiency}:1 (${efficiency >= 3 ? "✅ Alta eficiencia" : efficiency >= 1.5 ? "🔄 Moderada" : "⚠️ Baja eficiencia"}).`,
+  );
+  if (dieselSaved > 0) {
+    fb.push(
+      `   🛢️ Ahorro de combustible fósil: ~${dieselSaved} L diésel eq./ha vs manejo convencional (${Math.round(dieselSaved * 2.6)} kg CO₂ eq. evitados).`,
+    );
+  } else {
+    fb.push(`   🛢️ El consumo energético es similar al manejo convencional.`);
+  }
+
+  return {
+    energyInput: totalInput,
+    energyOutput: output,
+    netBalance,
+    efficiency,
+    dieselSaved,
+    feedback: fb,
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
 //  MOTOR PRINCIPAL DE SIMULACIÓN
 // ══════════════════════════════════════════════════════════════
 export function runSimulation(config: SimulationConfig): SimulationResult {
@@ -382,6 +618,19 @@ export function runSimulation(config: SimulationConfig): SimulationResult {
       biodiversityImpact: "Negativo",
       nitrogenUseEfficiency: 0,
       waterProductivity: 0,
+      polycultureActive: false,
+      polycultureYield: 0,
+      polycultureDetails: "",
+      landEquivalentRatio: 1,
+      proteinPerHa: 0,
+      caloriesPerHa: 0,
+      peopleFedPerHa: 0,
+      localFoodScore: 50,
+      energyInput: 0,
+      energyOutput: 0,
+      netEnergyBalance: 0,
+      energyEfficiency: 0,
+      fossilFuelSaved: 0,
       feedback: ["Error: cultivo o suelo no encontrado en la base de datos."],
     };
   }
@@ -436,6 +685,30 @@ export function runSimulation(config: SimulationConfig): SimulationResult {
   const yieldPct = Math.round(overallFactor * 100);
 
   // ══════════════════════════════════════════════════════
+  //  POLICULTIVO (MILPA)
+  // ══════════════════════════════════════════════════════
+  let polycultureYield = 0;
+  let polycultureDetails = "";
+  let landEquivalentRatio = 1;
+  let polycultureActive = false;
+
+  if (config.usePolyculture) {
+    const polyRes = calcPolyculture(crop, config, overallFactor);
+    allFeedback.push(...polyRes.feedback);
+    polycultureYield = polyRes.polycultureYield;
+    polycultureDetails = polyRes.details;
+    landEquivalentRatio = polyRes.ler;
+    polycultureActive = true;
+  }
+
+  // ══════════════════════════════════════════════════════
+  //  SOBERANÍA ALIMENTARIA
+  // ══════════════════════════════════════════════════════
+  const finalYieldForFS = config.usePolyculture ? polycultureYield : finalYield;
+  const fsRes = calcFoodSovereignty(crop, finalYieldForFS, config);
+  allFeedback.push(...fsRes.feedback);
+
+  // ══════════════════════════════════════════════════════
   //  EFICIENCIA DE AGUA
   // ══════════════════════════════════════════════════════
   const waterEff = Math.round(
@@ -452,6 +725,12 @@ export function runSimulation(config: SimulationConfig): SimulationResult {
   const totalWaterUsed = Math.round(
     (config.irrigationLevel / 100) * crop.idealIrrigationPct * 6 + 200,
   );
+
+  // ══════════════════════════════════════════════════════
+  //  ENERGÍA FÓSIL AHORRADA
+  // ══════════════════════════════════════════════════════
+  const enRes = calcEnergyBalance(crop, finalYieldForFS, config, totalWaterUsed);
+  allFeedback.push(...enRes.feedback);
 
   // ══════════════════════════════════════════════════════
   //  IMPACTO EN SALUD DEL SUELO
@@ -622,6 +901,19 @@ export function runSimulation(config: SimulationConfig): SimulationResult {
     biodiversityImpact: bioImpact,
     nitrogenUseEfficiency: nue,
     waterProductivity: waterProd,
+    polycultureActive,
+    polycultureYield,
+    polycultureDetails,
+    landEquivalentRatio,
+    proteinPerHa: fsRes.proteinPerHa,
+    caloriesPerHa: fsRes.caloriesPerHa,
+    peopleFedPerHa: fsRes.peopleFed,
+    localFoodScore: fsRes.localScore,
+    energyInput: enRes.energyInput,
+    energyOutput: enRes.energyOutput,
+    netEnergyBalance: enRes.netBalance,
+    energyEfficiency: enRes.efficiency,
+    fossilFuelSaved: enRes.dieselSaved,
     feedback: allFeedback,
   };
 }

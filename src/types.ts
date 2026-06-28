@@ -165,6 +165,7 @@ export interface SimulationConfig {
   useCoverCrop: boolean;
   useRotation: boolean;
   useCompostTea: boolean;
+  usePolyculture: boolean;       // modo milpa (maíz + poroto + zapallo)
 }
 
 // ============ SIMULATION RESULT ============
@@ -196,6 +197,25 @@ export interface SimulationResult {
   // Técnico
   nitrogenUseEfficiency: number; // kg yield / kg N
   waterProductivity: number;     // kg/m³
+
+  // ===== POLICULTIVO (Milpa) =====
+  polycultureActive: boolean;
+  polycultureYield: number;       // kg/ha combinado (maíz+poroto+zapallo)
+  polycultureDetails: string;    // desglose
+  landEquivalentRatio: number;   // LER > 1 indica ventaja del policultivo
+
+  // ===== SOBERANÍA ALIMENTARIA =====
+  proteinPerHa: number;          // kg proteína/ha
+  caloriesPerHa: number;         // kcal/ha
+  peopleFedPerHa: number;        // personas alimentadas/ha/año
+  localFoodScore: number;        // 0-100 (qué tan local/soberano)
+
+  // ===== ENERGÍA FÓSIL AHORRADA =====
+  energyInput: number;           // MJ/ha (energía invertida)
+  energyOutput: number;          // MJ/ha (energía obtenida)
+  netEnergyBalance: number;      // MJ/ha (output - input)
+  energyEfficiency: number;      // output/input ratio
+  fossilFuelSaved: number;        // L diésel eq/ha ahorrados vs convencional
 
   // Feedback
   feedback: string[];

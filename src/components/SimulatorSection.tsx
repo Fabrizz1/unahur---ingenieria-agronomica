@@ -67,6 +67,7 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
     useCoverCrop: true,
     useRotation: true,
     useCompostTea: false,
+    usePolyculture: false,
   });
 
   const [result, setResult] = useState<ReturnType<typeof runSimulation> | null>(null);
@@ -360,6 +361,15 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                 />
                 <span className="text-[var(--text2)]">Té de compost / microorganismos benéficos</span>
               </label>
+              <label className="flex items-center gap-2 text-xs cursor-pointer border-t border-[var(--stone-border)] pt-2 mt-1">
+                <input
+                  type="checkbox"
+                  checked={config.usePolyculture}
+                  onChange={(e) => setConfig({ ...config, usePolyculture: e.target.checked })}
+                  className="accent-[var(--text)]"
+                />
+                <span className="font-bold text-[var(--text)]">🌽🫘🎃 Sistema Milpa (Maíz + Poroto + Zapallo)</span>
+              </label>
             </div>
 
             {/* Run Button */}
@@ -538,6 +548,88 @@ export const SimulatorSection: React.FC<SimulatorSectionProps> = ({
                     <span className={`font-bold font-mono ${result.breakEven ? "text-emerald-600" : "text-rose-600"}`}>
                       {result.breakEven ? "Sí, rentable" : "No, pérdida"}
                     </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* === POLICULTIVO (MILPA) === */}
+              {result.polycultureActive && (
+                <div className="bg-amber-50 dark:bg-amber-950/30 p-3 border border-amber-200 dark:border-amber-800 space-y-2">
+                  <h4 className="text-[9px] font-mono uppercase tracking-wider text-amber-800 dark:text-amber-400 font-bold flex items-center gap-1">
+                    🌽🫘🎃 SISTEMA MILPA — Policultivo
+                  </h4>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px]">
+                    <div className="flex justify-between col-span-2">
+                      <span className="text-[var(--text2)]">Rendimiento combinado:</span>
+                      <span className="font-bold font-mono"><AnimatedCounter value={result.polycultureYield} suffix=" kg/ha" /></span>
+                    </div>
+                    <div className="col-span-2 text-[10px] text-[var(--text2)] font-mono">
+                      {result.polycultureDetails}
+                    </div>
+                    <div className="flex justify-between col-span-2">
+                      <span className="text-[var(--text2)]">LER (Land Equivalent Ratio):</span>
+                      <span className={`font-bold font-mono ${result.landEquivalentRatio > 1 ? "text-emerald-700 dark:text-emerald-400" : "text-[var(--text)]"}`}>
+                        {result.landEquivalentRatio.toFixed(2)} {result.landEquivalentRatio > 1 ? "✅" : ""}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* === SOBERANÍA ALIMENTARIA === */}
+              <div className="bg-green-50 dark:bg-green-950/30 p-3 border border-green-200 dark:border-green-800 space-y-2">
+                <h4 className="text-[9px] font-mono uppercase tracking-wider text-green-800 dark:text-green-400 font-bold flex items-center gap-1">
+                  🥗 Soberanía Alimentaria
+                </h4>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px]">
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text2)]">Proteína:</span>
+                    <span className="font-bold font-mono">{result.proteinPerHa} kg/ha</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text2)]">Energía:</span>
+                    <span className="font-bold font-mono">{(result.caloriesPerHa / 1000 / 1000).toFixed(1)} Mcal/ha</span>
+                  </div>
+                  <div className="flex justify-between col-span-2">
+                    <span className="text-[var(--text2)]">Personas alimentadas:</span>
+                    <span className="font-bold font-mono">{result.peopleFedPerHa} personas/ha/año</span>
+                  </div>
+                  <div className="flex justify-between col-span-2">
+                    <span className="text-[var(--text2)]">Puntaje de soberanía local:</span>
+                    <span className={`font-bold font-mono ${result.localFoodScore >= 70 ? "text-emerald-700 dark:text-emerald-400" : result.localFoodScore >= 40 ? "text-amber-700 dark:text-amber-400" : "text-rose-700 dark:text-rose-400"}`}>
+                      {result.localFoodScore}/100
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* === ENERGÍA FÓSIL === */}
+              <div className="bg-stone-50 dark:bg-stone-900/50 p-3 border border-stone-200 dark:border-stone-800 space-y-2">
+                <h4 className="text-[9px] font-mono uppercase tracking-wider text-stone-700 dark:text-stone-400 font-bold flex items-center gap-1">
+                  ⚡ Balance Energético
+                </h4>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px]">
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text2)]">Energía invertida:</span>
+                    <span className="font-mono">{result.energyInput.toLocaleString("es-AR")} MJ/ha</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text2)]">Energía obtenida:</span>
+                    <span className="font-mono">{result.energyOutput.toLocaleString("es-AR")} MJ/ha</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text2)]">Balance neto:</span>
+                    <span className={`font-bold font-mono ${result.netEnergyBalance >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
+                      {result.netEnergyBalance >= 0 ? "+" : ""}{result.netEnergyBalance.toLocaleString("es-AR")} MJ/ha
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text2)]">Eficiencia:</span>
+                    <span className="font-bold font-mono">{result.energyEfficiency}:1</span>
+                  </div>
+                  <div className="flex justify-between col-span-2">
+                    <span className="text-[var(--text2)]">Ahorro combustible fósil:</span>
+                    <span className="font-bold font-mono text-emerald-700 dark:text-emerald-400">{result.fossilFuelSaved} L diésel eq./ha</span>
                   </div>
                 </div>
               </div>
